@@ -14,8 +14,8 @@ pnpm uninstall:plugin     # uninstall
 Or specify the path explicitly:
 
 ```bash
-dsh plugin --profile web add <repo-path>
-dsh plugin --profile web remove dsh-skill-injector
+dsh plugin --profile web add <repo-path>            # install
+dsh plugin --profile web remove dsh-skill-injector  # uninstall
 ```
 
 ## Install from GitHub (after open-sourcing)

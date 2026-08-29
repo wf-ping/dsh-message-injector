@@ -14,7 +14,7 @@ dsh（DeepSeek Harness）插件：预设常用 skill 组合，选中后自动填
 
 ```bash
 dsh plugin --profile web add github:用户名/仓库名    # 从 GitHub 安装
-# 或（本地/开发时）：dsh plugin --profile web add <本仓库路径>
+dsh plugin --profile web add <本仓库路径>           # 本地/开发时安装
 ```
 
 > 插件以软链接（本地路径）或克隆（GitHub）方式装入 profile，`lib/` 产物已提交、无需构建。改代码后只需 `pnpm build` + 重启 dsh。详见[安装文档](docs/zh/安装.md)。
