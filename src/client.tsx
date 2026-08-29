@@ -442,38 +442,54 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>) {
 
 // ─── 插件入口 ───────────────────────────────────────────────────────────
 export function apply(ctx: RootCtx) {
-  ctx.effect(() => ctx.locale.register(NS, dict), 'skill-injector: dictionaries')
+  // 诊断日志（输出到浏览器控制台 F12）
+  console.log('[dsh-skill-injector] client apply start')
+  try {
+    ctx.effect(() => ctx.locale.register(NS, dict), 'skill-injector: dictionaries')
 
-  // 配置作用域：预设组 + 选中状态共用命名空间（F3 全局持久化）
-  const scope = ctx.settingsScope.bind<PresetConfig>({ namespace: NS })
+    // 配置作用域：预设组 + 选中状态共用命名空间（F3 全局持久化）
+    const scope = ctx.settingsScope.bind<PresetConfig>({ namespace: NS })
+    console.log('[dsh-skill-injector] settings scope bound')
 
-  // F2 预设选择器：FULL ACCESS 之后的官方座位（conversation.input.left，additive list 槽）
-  ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
-    name: 'conversation.input.left',
-    id: 'skill-injector-preset-selector',
-    order: 100,
-    locale: NS,
-    inject: () => ({ scope }),
-  }, PresetSelector))
+    // F2 预设选择器：FULL ACCESS 之后的官方座位（conversation.input.left，additive list 槽）
+    ctx.slots.inject('conversation.input.left', () => {
+      console.log('[dsh-skill-injector] registering preset selector slot')
+      return ctx.slots.register({
+        name: 'conversation.input.left',
+        id: 'skill-injector-preset-selector',
+        order: 100,
+        locale: NS,
+        inject: () => ({ scope }),
+      }, PresetSelector)
+    })
 
-  // F1 配置卡：设置 → 插件 → 插件配置（key 必须等于 Host 注册的命名空间）
-  ctx.slots.inject('settings.plugin.item', () => ctx.slots.register({
-    name: 'settings.plugin.item',
-    key: NS,
-    locale: NS,
-    inject: () => ({
-      scope,
-      fetchSkills: () => {
-        const sessionId = ctx.sessions.list.getSnapshot().current
-        if (!sessionId) return Promise.resolve(null)
-        return fetchKnownSkills(ctx, sessionId)
-      },
-    }),
-  }, PresetConfigCard))
+    // F1 配置卡：设置 → 插件 → 插件配置（key 必须等于 Host 注册的命名空间）
+    ctx.slots.inject('settings.plugin.item', () => {
+      console.log('[dsh-skill-injector] registering config card slot')
+      return ctx.slots.register({
+        name: 'settings.plugin.item',
+        key: NS,
+        locale: NS,
+        inject: () => ({
+          scope,
+          fetchSkills: () => {
+            const sessionId = ctx.sessions.list.getSnapshot().current
+            if (!sessionId) return Promise.resolve(null)
+            return fetchKnownSkills(ctx, sessionId)
+          },
+        }),
+      }, PresetConfigCard)
+    })
 
-  // F4/F5 自动填充轮询（500ms，用户拍板的实现方案）
-  ctx.effect(() => {
-    const timer = setInterval(() => { void tick(ctx, scope) }, 500)
-    return () => clearInterval(timer)
-  }, 'skill-injector: auto-fill polling')
+    // F4/F5 自动填充轮询（500ms，用户拍板的实现方案）
+    ctx.effect(() => {
+      const timer = setInterval(() => { void tick(ctx, scope) }, 500)
+      return () => clearInterval(timer)
+    }, 'skill-injector: auto-fill polling')
+
+    console.log('[dsh-skill-injector] client apply done')
+  } catch (e) {
+    console.error('[dsh-skill-injector] client apply FAILED:', e)
+    throw e
+  }
 }
