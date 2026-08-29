@@ -176,7 +176,11 @@ interface SelectorProps {
 
 function PresetSelector({ scope, t: tRaw }: SelectorProps) {
   const t = tRaw ?? ((k: string) => k)
-  const snap = useSyncExternalStore(scope.subscribe, scope.getSnapshot)
+  // 注意：必须用箭头函数包一层，否则 useSyncExternalStore 调用时丢失 this（SettingsScopeController 的方法依赖 this.store）
+  const snap = useSyncExternalStore(
+    (listener: () => void) => scope.subscribe(listener),
+    () => scope.getSnapshot(),
+  )
   const [open, setOpen] = useState(false)
   console.log('[dsh-skill-injector] PresetSelector render, status =', snap.status, ', groups =', (snap.value?.groups ?? []).length)
   const config = snap.status === 'ready' ? snap.value : undefined
@@ -238,7 +242,11 @@ function cloneGroup(g: PresetGroup): PresetGroup {
 
 function PresetConfigCard({ scope, fetchSkills, t: tRaw }: CardProps) {
   const t = tRaw ?? ((k: string) => k)
-  const snap = useSyncExternalStore(scope.subscribe, scope.getSnapshot)
+  // 同 PresetSelector：箭头函数包裹，避免丢失 this
+  const snap = useSyncExternalStore(
+    (listener: () => void) => scope.subscribe(listener),
+    () => scope.getSnapshot(),
+  )
   console.log('[dsh-skill-injector] PresetConfigCard render, status =', snap.status)
   const [draft, setDraft] = useState<PresetGroup[]>(() =>
     (snap.status === 'ready' ? snap.value?.groups ?? [] : []).map(cloneGroup))
