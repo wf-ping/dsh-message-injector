@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `dsh-skill-injector` 是 deepseek-harness（dsh）的一个插件：预设常用 skill 组合（如 `/grill-me` 等），用户无需每次对话前手动输入，由插件自动填充到对话框中。
 
-需求文档：`docs/需求/全局.md`，开发前先阅读。
+需求文档：`docs/zh/需求.md`，开发前先阅读。
 
 ## ⚠️ 高压线（绝对禁止，触犯即违规）
 
@@ -27,7 +27,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 插件开发框架（Cordis）
 
-dsh 插件基于 Cordis 框架，官方教程：`docs/deepseek-harness插件开发指南.md`（https://deepseek-harness.github.io/deepseek-harness/develop/basic/）
+dsh 插件基于 Cordis 框架，官方教程：https://deepseek-harness.github.io/deepseek-harness/develop/basic/（亦见 `docs/zh/架构.md`）
 
 - 插件根目录的 `cordis.yml` 是本地插件加载配置（覆盖层），通过 `insert` 引入插件入口文件的**绝对路径**，例如：
   ```yaml
@@ -53,10 +53,10 @@ dsh-skill-injector/
 ├── lib/index.js            # 后端构建产物（已提交；改后端代码后需重新 pnpm build）
 ├── lib/client.js           # 前端构建产物（已提交；改前端代码后需重新 pnpm build）
 ├── docs/
-│   ├── deepseek-harness插件开发指南.md  # 官方教程入口
-│   └── 需求/全局.md                     # 需求定义
+│   ├── zh/                             # 中文文档（安装.md / 使用说明.md / 架构.md / 需求.md）
+│   └── en/                             # 英文文档（install.md / usage.md / architecture.md）
 ├── CONTEXT.md              # 领域术语表
-└── README.md               # 使用/构建/测试说明
+└── README.md               # 精简门面页（中文，含文档链接）
 ```
 
 > 术语约定：dsh 官方称 "host half / client half"（宿主半区/客户端半区），本项目文档统一用"**后端 / 前端**"表述（后端 = 服务端逻辑，前端 = 浏览器 UI）。
