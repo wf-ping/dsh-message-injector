@@ -1,5 +1,5 @@
 /**
- * dsh-skill-injector — 客户端半区（浏览器 UI）
+ * dsh-skill-injector — 前端（dsh 官方称 Client half）
  *
  * 职责：
  *  - 预设选择器按钮（conversation.input.left 槽，位于 FULL ACCESS 之后，F2）
@@ -12,7 +12,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { Menu, IconSkillOutline16, IconChevronDownOutline14 } from '@deepseek-ai/dsh-client-ui-primitives'
 
-// ─── 领域类型（与 Host 半区 schema 对齐）──────────────────────────────
+// ─── 领域类型（与后端 schema 对齐）──────────────────────────────
 interface PresetGroup {
   name: string
   description: string

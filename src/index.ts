@@ -1,5 +1,5 @@
 /**
- * dsh-skill-injector — Host 半区（服务端）
+ * dsh-skill-injector — 后端（dsh 官方称 Host half）
  *
  * 职责：
  *  - 声明插件配置 schema（预设组列表 + 当前选中组），经 settings 命名空间持久化（F3 全局持久化）

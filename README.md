@@ -15,17 +15,20 @@ dsh（DeepSeek Harness）插件：预设常用 skill 组合，选中后自动填
 | F5 填充守卫 | 输入框去掉空白后非空 → 不填充，绝不触碰已有内容 |
 | F6 校验边界 | 保存时硬校验（Host `validate`）；技能缺失警告标记（⚠️）+ 填充时跳过缺失项；全禁用空态提示 |
 
-## 架构（双半区插件）
+## 架构（前端 + 后端）
+
+> dsh 官方把这两部分叫 **host half / client half**（宿主半区/客户端半区），本质就是**后端 / 前端**：后端跑在 dsh 服务端进程里（配置、校验、持久化），前端跑在浏览器里（按钮、表单、自动填充）。本文档统一用"后端/前端"。
 
 ```
 dsh-skill-injector/
-├── package.json            # dsh.client 声明 + exports["./client"] 指向构建产物
+├── package.json            # 插件身份证：dsh.bundle（激活）+ dsh.client（前端声明）+ exports["./client"]
 ├── src/
-│   ├── index.ts            # Host 半区（Node 26 原生跑 TS）：Config schema + settings 接线 + validate
-│   ├── client.tsx          # 客户端半区源码（JSX；构建为 lib/client.js）
+│   ├── index.ts            # 后端源码：Config schema + settings 接线 + validate（构建为 lib/index.js）
+│   ├── client.tsx          # 前端源码（JSX；构建为 lib/client.js）
 │   └── ambient.d.ts        # 最小类型桩（react / primitives 由浏览器运行时提供）
-├── scripts/build.mjs       # esbuild 构建：src/client.tsx → lib/client.js（__ModuleLoader__.load 形态）
-├── lib/client.js           # 构建产物（已提交；改动客户端代码后需重新 pnpm build）
+├── scripts/build.mjs       # esbuild 构建：后端 → lib/index.js，前端 → lib/client.js
+├── lib/index.js            # 后端构建产物（已提交）
+├── lib/client.js           # 前端构建产物（已提交；改动前端代码后需重新 pnpm build）
 └── docs/需求/全局.md        # 需求定义
 ```
 
@@ -35,14 +38,15 @@ dsh-skill-injector/
 
 - **UI 注入**：`ctx.slots.inject('conversation.input.left', ...)` 注册列表槽组件（输入工具栏 FULL ACCESS 之后的官方座位）；配置卡走 `settings.plugin.item`（key = 命名空间 `skill-injector`）
 - **输入读写**：官方通道 `input.setDraft(text)`（`conversation.input.for(actx)`，React 受控组件，禁止直接改 DOM）；判空读 `input.state.getSnapshot()`（draft/phase）
-- **配置持久化**：Host `installSettingsSection` 注册命名空间；客户端 `ctx.settingsScope.bind({namespace})` 读写（跨标签页同步）
+- **配置持久化**：后端 `installSettingsSection` 注册命名空间；前端 `ctx.settingsScope.bind({namespace})` 读写（跨标签页同步）
 - **技能目录**：`connection.api.skills.list({sessionId})`（必须带会话；无会话时校验不可用 → 填充按配置原样执行）
+- **踩坑记录**：`useSyncExternalStore` 必须用箭头函数包裹 `scope.getSnapshot/subscribe`，否则丢失 `this` 导致渲染崩溃
 
 ## 构建
 
 ```bash
 pnpm install          # 安装依赖（schemastery / dsh-settings / esbuild / typescript）
-pnpm build            # 构建客户端半区 → lib/client.js（dsh HMR 监视该文件，改后重构建即热更）
+pnpm build            # 构建前端 → lib/client.js（dsh HMR 监视该文件，改后重构建即热更）
 pnpm typecheck        # tsc --noEmit 类型检查
 ```
 

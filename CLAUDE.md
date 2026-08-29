@@ -44,13 +44,14 @@ dsh 插件基于 Cordis 框架，官方教程：`docs/deepseek-harness插件开�
 
 ```
 dsh-skill-injector/
-├── package.json            # dsh.client 声明 + exports["./client"] → lib/client.js
+├── package.json            # 插件身份证：dsh.bundle（激活）+ dsh.client（前端声明）+ exports["./client"]
 ├── src/
-│   ├── index.ts            # Host 半区：Config schema + settings 接线 + validate
-│   ├── client.tsx          # 客户端半区源码（JSX，构建为 lib/client.js）
+│   ├── index.ts            # 后端源码：Config schema + settings 接线 + validate
+│   ├── client.tsx          # 前端源码（JSX，构建为 lib/client.js）
 │   └── ambient.d.ts        # 最小类型桩（react / primitives 由浏览器运行时提供）
-├── scripts/build.mjs       # esbuild 构建客户端半区（pnpm build）
-├── lib/client.js           # 构建产物（已提交；改客户端代码后需重新 pnpm build）
+├── scripts/build.mjs       # esbuild 构建（pnpm build）：后端 → lib/index.js，前端 → lib/client.js
+├── lib/index.js            # 后端构建产物（已提交；改后端代码后需重新 pnpm build）
+├── lib/client.js           # 前端构建产物（已提交；改前端代码后需重新 pnpm build）
 ├── docs/
 │   ├── deepseek-harness插件开发指南.md  # 官方教程入口
 │   └── 需求/全局.md                     # 需求定义
@@ -58,11 +59,12 @@ dsh-skill-injector/
 └── README.md               # 使用/构建/测试说明
 ```
 
+> 术语约定：dsh 官方称 "host half / client half"（宿主半区/客户端半区），本项目文档统一用"**后端 / 前端**"表述（后端 = 服务端逻辑，前端 = 浏览器 UI）。
 > 说明：仓库**不包含** `cordis.yml`/`--patch` 本地加载配置——它需要写入项目绝对路径，开源会泄露个人信息；插件统一走官方 `dsh plugin add/remove` 安装。
 
 ## 常用命令
 
-- `pnpm build`：构建客户端半区 → lib/client.js（dsh HMR 监视此文件，重新构建后浏览器免刷新热更）
+- `pnpm build`：构建 → 后端 lib/index.js + 前端 lib/client.js（改代码后重新构建即生效）
 - `pnpm typecheck`：tsc --noEmit 类型检查
 - `pnpm install:plugin`：官方安装（`dsh plugin --profile web add "$PWD"`，在仓库目录内执行）
 - `pnpm uninstall:plugin`：官方卸载
