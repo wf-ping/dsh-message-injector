@@ -17,7 +17,9 @@ dsh plugin --profile web add github:用户名/仓库名    # 从 GitHub 安装
 dsh plugin --profile web add <本仓库路径>           # 本地/开发时安装
 ```
 
-> 插件以软链接（本地路径）或克隆（GitHub）方式装入 profile，`lib/` 产物已提交、无需构建。改代码后只需 `pnpm build` + 重启 dsh。详见[安装文档](docs/zh/安装.md)。
+> 本地路径安装：软链接指向你的仓库，改代码后 `pnpm build` + 重启 dsh 即生效，无需重装。
+> GitHub 安装：装入仓库克隆副本，与本地代码无关，更新需重新执行 add 拉取最新。
+> 两种方式均无需构建（`lib/` 产物已提交）。详见[安装文档](docs/zh/安装.md)。
 
 ## 文档
 
