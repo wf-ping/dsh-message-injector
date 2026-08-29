@@ -77,7 +77,4 @@ export function apply(ctx: Context) {
       }
     },
   })
-
-  // 诊断日志：console.log 保证终端可见（ctx.logger 是服务工厂，直接 .info 无效）
-  console.log('[dsh-skill-injector] host apply ran')
 }
