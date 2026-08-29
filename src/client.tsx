@@ -12,6 +12,9 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { Menu, IconSkillOutline16, IconChevronDownOutline14 } from '@deepseek-ai/dsh-client-ui-primitives'
 
+// 模块顶层日志：客户端 bundle 被浏览器加载/执行时立即打印（与 apply 是否被调用无关）
+console.log('[dsh-skill-injector] bundle materialized')
+
 // ─── 领域类型（与 Host 半区 schema 对齐）──────────────────────────────
 interface PresetGroup {
   name: string
