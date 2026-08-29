@@ -29,7 +29,7 @@ dsh-skill-injector/
 └── docs/需求/全局.md        # 需求定义
 ```
 
-> 仓库**不包含** `cordis.yml` / `--patch` 本地加载配置——它要求写入项目绝对路径，开源会泄露个人信息。插件统一走官方 `dsh plugin add/remove` 安装（见下）。
+> 仓库**不包含** `cordis.yml` / `--patch` 本地加载配置。插件统一走官方 `dsh plugin add/remove` 安装（见下）。
 
 关键机制（研究结论，开发时已核实）：
 
