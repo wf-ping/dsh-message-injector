@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "dsh 插件：预设常用 skill 组合，自动填充到输入框首行",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./lib/index.js",
   "exports": {
-    ".": "./src/index.ts",
+    ".": "./lib/index.js",
     "./client": "./lib/client.js",
     "./package.json": "./package.json"
   },

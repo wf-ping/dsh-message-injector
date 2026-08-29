@@ -1,22 +1,35 @@
 /**
- * 构建客户端半区：src/client.ts → lib/client.js
+ * 构建插件两个半区（产物提交在 lib/，安装即用，无需用户构建）：
+ *   1. Host 半区  ：src/index.ts  → lib/index.js   （ESM；schemastery/dsh-settings 保持外部解析）
+ *   2. 客户端半区 ：src/client.tsx → lib/client.js （__ModuleLoader__.load 形态，浏览器半区标准格式）
  *
- * 产出为 dsh 浏览器半区标准形态：
- *   window.__ModuleLoader__.load({ id, factory })  —— factory 内是 esbuild 打包后的 CJS 代码，
- *   require() 仅指向浏览器运行时提供的模块（react / react/jsx-runtime / @deepseek-ai/dsh-client-ui-primitives）。
- *
- * 用法：pnpm build   （dsh 的 HMR 监视 lib/client.js，重新构建后浏览器免刷新热更）
+ * 用法：pnpm build
  */
 import { build } from 'esbuild'
 import { mkdirSync, writeFileSync } from 'node:fs'
 
+// ─── 1. Host 半区 ───────────────────────────────────────────────────────
+const host = await build({
+  entryPoints: ['src/index.ts'],
+  bundle: true,
+  format: 'esm',
+  platform: 'node',
+  target: 'node20',
+  external: ['@deepseek-ai/schemastery', '@deepseek-ai/dsh-settings'],
+  write: false,
+  logLevel: 'info',
+})
+mkdirSync('lib', { recursive: true })
+writeFileSync('lib/index.js', host.outputFiles[0].text)
+console.log('built lib/index.js (' + host.outputFiles[0].text.length + ' bytes)')
+
+// ─── 2. 客户端半区 ──────────────────────────────────────────────────────
 const external = [
   'react',
   'react/jsx-runtime',
   '@deepseek-ai/dsh-client-ui-primitives',
 ]
-
-const result = await build({
+const client = await build({
   entryPoints: ['src/client.tsx'],
   bundle: true,
   format: 'cjs',
@@ -28,7 +41,7 @@ const result = await build({
   logLevel: 'info',
 })
 
-const code = result.outputFiles[0].text
+const code = client.outputFiles[0].text
 const wrapped = `window.__ModuleLoader__.load({
 \tid: "dsh-skill-injector",
 \tfactory: (require) => {
@@ -40,6 +53,5 @@ ${code}
 });
 `
 
-mkdirSync('lib', { recursive: true })
 writeFileSync('lib/client.js', wrapped)
 console.log('built lib/client.js (' + wrapped.length + ' bytes)')
