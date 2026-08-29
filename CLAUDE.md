@@ -64,3 +64,5 @@ dsh-skill-injector/
 
 - `pnpm build`：构建客户端半区 → lib/client.js（dsh HMR 监视此文件，重新构建后浏览器免刷新热更）
 - `pnpm typecheck`：tsc --noEmit 类型检查
+- `pnpm install:plugin`：官方安装（`dsh plugin --profile web add "$PWD"`，在仓库目录内执行）
+- `pnpm uninstall:plugin`：官方卸载

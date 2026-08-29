@@ -52,14 +52,16 @@ pnpm typecheck        # tsc --noEmit 类型检查
 
 开发红线（见 `CLAUDE.md`）：只允许在项目内改代码；不自启动 dsh 服务；测试仅用官方安装/卸载方式。
 
-**安装（成品已含在仓库里，无需先 build）：**
+**安装 / 卸载（在仓库目录内执行，无需复制路径）：**
 
 ```bash
-dsh plugin --profile web add <本仓库路径>            # 安装
-dsh plugin --profile web remove dsh-skill-injector   # 卸载
+pnpm install:plugin       # 安装（等价于 dsh plugin --profile web add "$PWD"）
+pnpm uninstall:plugin     # 卸载
 ```
 
-> `pnpm build` 不是安装，而是"打包"：把浏览器界面源码（`src/client.tsx`）翻译成 dsh 能读取的 `lib/client.js`。该产物已提交在仓库中，**直接安装即可**；只有改动过 `src/client.tsx` 界面代码后，才需要先 `pnpm build` 再重新 `dsh plugin add`。
+> 安装后需**重启 dsh web** 使插件层生效（激活层在启动时加载）。
+> 插件以**软链接**方式装入 profile，指向本仓库——之后改动代码**无需重新安装**：改完 `src/` 执行 `pnpm build`，再重启 dsh 即可生效。
+> `pnpm build` 只是"打包"：把浏览器界面源码（`src/client.tsx`）翻译成 dsh 能读取的 `lib/client.js`，产物已提交在仓库中。
 > 仓库不提供 `--patch` 本地加载配置（避免在仓库内维护含绝对路径的 `cordis.yml`）。
 
 ## 使用说明
