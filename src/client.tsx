@@ -174,9 +174,11 @@ interface SelectorProps {
   t: (key: string) => string
 }
 
-function PresetSelector({ scope, t }: SelectorProps) {
+function PresetSelector({ scope, t: tRaw }: SelectorProps) {
+  const t = tRaw ?? ((k: string) => k)
   const snap = useSyncExternalStore(scope.subscribe, scope.getSnapshot)
   const [open, setOpen] = useState(false)
+  console.log('[dsh-skill-injector] PresetSelector render, status =', snap.status, ', groups =', (snap.value?.groups ?? []).length)
   const config = snap.status === 'ready' ? snap.value : undefined
   const groups = (config?.groups ?? []).filter((g) => g.enabled)
   const selected = config?.selected ?? ''
@@ -234,8 +236,10 @@ function cloneGroup(g: PresetGroup): PresetGroup {
   return { name: g.name, description: g.description, skills: [...g.skills], enabled: g.enabled }
 }
 
-function PresetConfigCard({ scope, fetchSkills, t }: CardProps) {
+function PresetConfigCard({ scope, fetchSkills, t: tRaw }: CardProps) {
+  const t = tRaw ?? ((k: string) => k)
   const snap = useSyncExternalStore(scope.subscribe, scope.getSnapshot)
+  console.log('[dsh-skill-injector] PresetConfigCard render, status =', snap.status)
   const [draft, setDraft] = useState<PresetGroup[]>(() =>
     (snap.status === 'ready' ? snap.value?.groups ?? [] : []).map(cloneGroup))
   const [dirty, setDirty] = useState(false)
