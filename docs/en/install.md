@@ -18,6 +18,20 @@ dsh plugin --profile web add <repo-path>
 dsh plugin --profile web remove dsh-skill-injector
 ```
 
+## Install from GitHub (after open-sourcing)
+
+```bash
+dsh plugin --profile web add github:user/repo
+```
+
+Pin a branch/tag:
+
+```bash
+dsh plugin --profile web add github:user/repo#main
+```
+
+> How it works: `dsh plugin add` forwards its arguments to pnpm, which natively supports `github:user/repo` specs. The `lib/` build artifacts are committed, so the fetched package is ready to use — no build needed — and the `dsh.bundle` declaration makes it mount automatically as a profile layer.
+
 > **Restart dsh web** after installing — the plugin layer is loaded at boot time.
 
 ## Iterating after code changes
