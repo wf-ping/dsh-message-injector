@@ -10,6 +10,9 @@
     "./package.json": "./package.json"
   },
   "dsh": {
+    "bundle": {
+      "patch": "./bundle.patch.yml"
+    },
     "client": {
       "inject": [
         "slots",

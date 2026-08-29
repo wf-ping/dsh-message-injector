@@ -1,0 +1,6 @@
+# dsh-skill-injector 激活补丁（bundle 层）
+# 由 dsh plugin add 依据 package.json 的 dsh.bundle.patch 自动挂载为 profile 层；
+# 启动时把本插件的加载条目注入 loader（name 为包名，不含任何绝对路径）。
+- insert:
+    - id: dsh-skill-injector
+      name: dsh-skill-injector
