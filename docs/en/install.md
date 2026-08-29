@@ -52,4 +52,4 @@ dsh plugin --profile web add github:user/repo#main
 ## Safety notes
 
 - For testing, use the **official install/uninstall commands** above — never hand-edit dsh configuration files (under `$DSH_HOME`).
-- This repo ships no `--patch` local-load config — it requires an absolute path in the repo, which would leak personal info in an open-source project.
+- This repo ships no `--patch` local-load config.

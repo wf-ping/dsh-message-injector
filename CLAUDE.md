@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 2. 所有改动**只允许发生在本项目**（`dsh-skill-injector/`）代码内。
 3. **测试插件可用性时，当且仅当使用官方的安装/卸载方式**，且**测试由用户亲自执行**：
    - 正式安装/卸载（官方命令）：`dsh plugin --profile <name> add|remove <package>`
-   - 本仓库**不维护** `--patch` 本地开发加载配置（`cordis.yml` 含绝对路径，开源会泄露个人信息），不使用该方式
+   - 本仓库**不维护** `--patch` 本地开发加载配置，不使用该方式
 4. **绝对禁止自启动 dsh 服务（如 `dsh web`、`dsh --profile` 等）做自动化测试/验证**——包括后台启动、临时启动、换端口启动。开发交付物是项目内代码与说明；安装、卸载、测试全部由用户亲自执行。
 5. 任何"绕过官方机制、手改 dsh 配置来让插件生效"的做法都视为违规，立即停止并汇报。
 
@@ -60,7 +60,7 @@ dsh-skill-injector/
 ```
 
 > 术语约定：dsh 官方称 "host half / client half"（宿主半区/客户端半区），本项目文档统一用"**后端 / 前端**"表述（后端 = 服务端逻辑，前端 = 浏览器 UI）。
-> 说明：仓库**不包含** `cordis.yml`/`--patch` 本地加载配置——它需要写入项目绝对路径，开源会泄露个人信息；插件统一走官方 `dsh plugin add/remove` 安装。
+> 说明：仓库**不包含** `cordis.yml`/`--patch` 本地加载配置；插件统一走官方 `dsh plugin add/remove` 安装。
 
 ## 常用命令
 
