@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `dsh-message-injector` 是 deepseek-harness（dsh）的一个插件：预设常用"消息注入内容"组合（任意文本 / 技能调用），**每条消息自动注入**到输入框首行，一键启用、切换、停止。
 
 需求文档：`docs/zh/需求.md`，开发前先阅读。
+开发经验（踩坑记录与流程建议）：`docs/zh/开发经验.md`。
 
 ## ⚠️ 高压线（绝对禁止，触犯即违规）
 

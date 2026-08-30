@@ -63,4 +63,4 @@ dsh plugin --profile web remove dsh-message-injector    # 卸载
 - [使用说明](docs/zh/使用说明.md)
 - [架构](docs/zh/架构.md)
 
-> 开发者：需求文档见 `docs/zh/需求.md`，术语表见 `CONTEXT.md`。
+> 开发者：需求文档见 `docs/zh/需求.md`，开发经验（踩坑记录）见 `docs/zh/开发经验.md`，术语表见 `CONTEXT.md`。
