@@ -65,10 +65,12 @@ dsh-message-injector/
 ├── scripts/build.mjs       # esbuild 构建（pnpm build）：后端 → lib/index.js，前端 → lib/client.js
 ├── lib/index.js            # 后端构建产物（已提交；改后端代码后需重新 pnpm build）
 ├── lib/client.js           # 前端构建产物（已提交；改前端代码后需重新 pnpm build）
+├── CHANGELOG.md            # 更新日志（Keep a Changelog；发布时打 tag + GitHub Release）
 ├── docs/
-│   ├── zh/                             # 中文文档（安装.md / 使用说明.md / 架构.md / 需求.md）
+│   ├── zh/                             # 中文文档（安装.md / 使用说明.md / 架构.md / 需求.md / 迭代记录.md）
 │   └── en/                             # 英文文档（install.md / usage.md / architecture.md）
 ├── CONTEXT.md              # 领域术语表
+├── LICENSE                 # MIT 开源协议
 ├── README.md               # 中文门面页（只链中文文档）
 └── README_EN.md            # 英文门面页（只链英文文档）
 ```

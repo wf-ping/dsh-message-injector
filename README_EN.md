@@ -67,3 +67,5 @@ dsh plugin --profile web remove dsh-message-injector    # uninstall
 - [Install](docs/en/install.md)
 - [Usage](docs/en/usage.md)
 - [Architecture](docs/en/architecture.md)
+- [Changelog](CHANGELOG.md) (zh)
+- [Iteration log](docs/zh/迭代记录.md) (zh)
