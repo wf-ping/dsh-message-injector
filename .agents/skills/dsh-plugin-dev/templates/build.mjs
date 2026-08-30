@@ -1,7 +1,7 @@
 /**
  * 构建插件两端（产物提交在 lib/，安装即用，无需用户构建）：
- *   1. 后端：src/index.ts  → lib/index.js   （ESM；schemastery/dsh-settings 保持外部解析）
- *   2. 前端：src/client.tsx → lib/client.js （__ModuleLoader__.load 形态，浏览器端标准格式）
+ *   1. 后端：src/host/index.ts    → lib/index.js   （ESM；schemastery/dsh-settings 保持外部解析）
+ *   2. 前端：src/client/index.tsx → lib/client.js （__ModuleLoader__.load 形态，浏览器端标准格式）
  *
  * 用法：pnpm build
  */
@@ -10,7 +10,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 
 // ─── 1. 后端 ───────────────────────────────────────────────────────
 const host = await build({
-  entryPoints: ['src/index.ts'],
+  entryPoints: ['src/host/index.ts'],
   bundle: true,
   format: 'esm',
   platform: 'node',
@@ -32,7 +32,7 @@ const external = [
   // '@deepseek-ai/dsh-client-store',
 ]
 const client = await build({
-  entryPoints: ['src/client.tsx'],
+  entryPoints: ['src/client/index.tsx'],
   bundle: true,
   format: 'cjs',
   platform: 'browser',

@@ -1,16 +1,17 @@
 /**
  * 构建插件两端（产物提交在 lib/，安装即用，无需用户构建）：
- *   1. 后端：src/index.ts  → lib/index.js   （ESM；schemastery/dsh-settings 保持外部解析）
- *   2. 前端：src/client.tsx → lib/client.js （__ModuleLoader__.load 形态，浏览器端标准格式）
+ *   1. 后端：src/host/index.ts    → lib/index.js   （ESM；schemastery/dsh-settings 保持外部解析）
+ *   2. 前端：src/client/index.tsx → lib/client.js （__ModuleLoader__.load 形态，浏览器端标准格式）
  *
+ * 目录约定：src/ 按官方 half 分法分 host（后端）/ client（前端）两个目录。
  * 用法：pnpm build
  */
 import { build } from 'esbuild'
 import { mkdirSync, writeFileSync } from 'node:fs'
 
-// ─── 1. 后端 ───────────────────────────────────────────────────────
+// ─── 1. 后端（host half）────────────────────────────────────────────
 const host = await build({
-  entryPoints: ['src/index.ts'],
+  entryPoints: ['src/host/index.ts'],
   bundle: true,
   format: 'esm',
   platform: 'node',
@@ -23,14 +24,14 @@ mkdirSync('lib', { recursive: true })
 writeFileSync('lib/index.js', host.outputFiles[0].text)
 console.log('built lib/index.js (' + host.outputFiles[0].text.length + ' bytes)')
 
-// ─── 2. 前端 ──────────────────────────────────────────────────────
+// ─── 2. 前端（client half）──────────────────────────────────────────
 const external = [
   'react',
   'react/jsx-runtime',
   '@deepseek-ai/dsh-client-ui-primitives',
 ]
 const client = await build({
-  entryPoints: ['src/client.tsx'],
+  entryPoints: ['src/client/index.tsx'],
   bundle: true,
   format: 'cjs',
   platform: 'browser',

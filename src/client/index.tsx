@@ -137,7 +137,7 @@ const dict: Record<string, Record<string, string>> = {
 }
 
 // ─── 样式（data-plugin-css 注入模式；全部使用 --dsw-alias-* 令牌 → 随主题共变，N1）───
-// 仅选择器按钮与预设组块；配置卡壳/字段样式由通用组件 src/components/ConfigCard.tsx 注入
+// 仅选择器按钮与预设组块；配置卡壳/字段样式由通用组件 src/client/components/ConfigCard.tsx 注入
 const CSS = `
 .psi-trigger{min-width:0;max-width:220px;height:28px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:none;border-radius:24px;outline:none;align-items:center;gap:4px;padding:0 4px 0 8px;font-size:13px;font-weight:500;line-height:20px;display:inline-flex}
 .psi-trigger:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}

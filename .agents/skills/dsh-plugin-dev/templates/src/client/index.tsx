@@ -1,7 +1,7 @@
 /**
  * dsh 插件前端最小骨架（槽位组件 + settingsScope 读取）
  *
- * 完整功能参考：dsh-message-injector 仓库的 src/client.tsx——
+ * 完整功能参考：dsh-message-injector 仓库的 src/client/index.tsx——
  *  - 500ms 轮询注入、注入守卫、技能存在性校验、词典（zh/en）
  *
  * 数据读取两条路（开发前先按 SKILL.md 步骤 1 确认 harness 版本与基线支持面）：
@@ -41,11 +41,15 @@ export const inject = ['slots', 'locale', 'sessions', 'settingsScope', 'connecti
 
 // ─── 词典（zh/en）──────────────────────────────────────────────────────
 const dict: Record<string, Record<string, string>> = {
-  zh: { count: '计数' },
-  en: { count: 'Count' },
+  zh: { count: '计数', desc: '示例配置卡', save: '保存', discard: '放弃' },
+  en: { count: 'Count', desc: 'Example config card', save: 'Save', discard: 'Discard' },
 }
 
 // ─── 组件：设置 → 插件 → 插件配置 卡（settings.plugin.item 槽）──────────
+// 通用配置卡壳（官方样式 + 折叠标题栏 + 放弃/保存脚注）来自 components/ConfigCard.tsx；
+// 字段样式类（psi-field / psi-head / psi-label / psi-hint 等）随 ConfigCard 一并注入
+import { ConfigCard } from './components/ConfigCard'
+
 function HelloCard({ scope, t }: { scope: ScopeLike<{ count: number }>; t: (key: string) => string }) {
   // 坑 7：必须用箭头函数包一层，否则 useSyncExternalStore 调用时丢失 this
   const snap = useSyncExternalStore(
@@ -53,7 +57,24 @@ function HelloCard({ scope, t }: { scope: ScopeLike<{ count: number }>; t: (key:
     () => scope.getSnapshot(),
   )
   const count = snap.status === 'ready' ? snap.value?.count ?? 0 : 0
-  return <div>{t('count')}: {count}</div>
+  return (
+    <ConfigCard
+      title="Hello"
+      description={t('desc')}
+      dirty={false}
+      saving={false}
+      onSave={() => {}}
+      onDiscard={() => {}}
+      labels={{ save: t('save'), discard: t('discard') }}
+    >
+      <div className="psi-field">
+        <div className="psi-head">
+          <span className="psi-label">{t('count')}</span>
+        </div>
+        <p className="psi-hint">{count}</p>
+      </div>
+    </ConfigCard>
+  )
 }
 
 // ─── 插件入口 ───────────────────────────────────────────────────────────

@@ -47,15 +47,17 @@ dsh 插件基于 Cordis 框架，官方教程：https://deepseek-harness.github.
 ```
 dsh-message-injector/
 ├── package.json            # 插件身份证：dsh.bundle（激活）+ dsh.client（前端声明）+ exports["./client"]
-├── src/
-│   ├── index.ts            # 后端源码：Config schema + settings 接线 + validate
-│   ├── client.tsx          # 前端源码（JSX，构建为 lib/client.js）
-│   ├── components/
-│   │   └── ConfigCard.tsx  # 通用配置卡组件（官方壳复刻：折叠标题栏 + 表单体 + 放弃/保存脚注 + 展开信号）
-│   ├── utils/
-│   │   ├── scroll.ts       # 通用滚动工具（findScrollContainer / scrollElementIntoView / useReveal）
-│   │   └── css.ts          # CSS 注入工具（injectStyle，data-plugin-css 机制）
-│   └── ambient.d.ts        # 最小类型桩（react / primitives 由浏览器运行时提供）
+├── src/                             # 按官方 half 分法：host（后端）/ client（前端）
+│   ├── host/
+│   │   └── index.ts            # 后端源码：Config schema + settings 接线 + validate
+│   └── client/                 # 前端源码（全部浏览器代码，构建为 lib/client.js）
+│       ├── index.tsx           # 前端入口（原 client.tsx）
+│       ├── components/
+│       │   └── ConfigCard.tsx  # 通用配置卡组件（官方壳复刻：折叠标题栏 + 表单体 + 放弃/保存脚注 + 展开信号）
+│       ├── utils/
+│       │   ├── scroll.ts       # 通用滚动工具（findScrollContainer / scrollElementIntoView / useReveal）
+│       │   └── css.ts          # CSS 注入工具（injectStyle，data-plugin-css 机制）
+│       └── ambient.d.ts        # 最小类型桩（react / primitives 由浏览器运行时提供）
 ├── scripts/build.mjs       # esbuild 构建（pnpm build）：后端 → lib/index.js，前端 → lib/client.js
 ├── lib/index.js            # 后端构建产物（已提交；改后端代码后需重新 pnpm build）
 ├── lib/client.js           # 前端构建产物（已提交；改前端代码后需重新 pnpm build）
