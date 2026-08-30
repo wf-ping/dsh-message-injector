@@ -45,7 +45,14 @@ dsh plugin --profile web add github:用户名/仓库名    # 重新拉取最新�
 # 重启 dsh web 生效
 ```
 
-> 若重新 add 后仍未更新，先卸载再装：`dsh plugin --profile web remove dsh-skill-injector`，然后重新 add。
+> 若重新 add 后仍未更新，先卸载再重装（见[卸载](#卸载)）。
+
+## 卸载
+
+```bash
+dsh plugin --profile web remove dsh-skill-injector    # 卸载
+# 或在仓库目录内：pnpm uninstall:plugin
+```
 
 ## 文档
 
