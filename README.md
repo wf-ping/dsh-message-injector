@@ -24,12 +24,31 @@ dsh plugin --profile web add <本仓库路径>           # 本地/开发时安�
 改代码后需要重新生成 `lib/` 并重启生效：
 
 ```bash
-pnpm build        # 重新生成 lib/（把 src/ 的源码翻译成 dsh 能读取的 JS）
-# 然后重启 dsh web 生效
+pnpm install      # 安装运行环境
+pnpm build        # 生成产物
+dsh web           # 启动服务
 ```
 
-> 本地路径安装（软链接指向仓库）：改代码后 `pnpm build` + 重启 dsh 即生效，无需重装。
-> GitHub 安装（克隆副本）：与本地代码无关，本地改代码不影响已装副本；更新需重新 `dsh plugin add` 拉取最新。
+> 本地路径安装（软链接）：`pnpm build` + 重启 dsh 即生效，无需重装插件。
+> GitHub 安装（克隆副本）：与本地代码无关，更新需重新 `dsh plugin add` 拉取最新。
+
+## 更新
+
+**本地路径安装（软链接）** —— 更新 = 改代码 + 重新构建，无需重装：
+
+```bash
+pnpm build        # 重新生成 lib/
+# 重启 dsh web 生效
+```
+
+**GitHub 安装（克隆副本）** —— 已装副本与本地代码无关，更新需重新拉取：
+
+```bash
+dsh plugin --profile web add github:用户名/仓库名    # 重新拉取最新版本
+# 重启 dsh web 生效
+```
+
+> 若重新 add 后仍未更新，先卸载再装：`dsh plugin --profile web remove dsh-skill-injector`，然后重新 add。
 
 ## 文档
 
