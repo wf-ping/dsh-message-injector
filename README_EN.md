@@ -7,7 +7,7 @@ A dsh (DeepSeek Harness) plugin: preset common skill combinations and auto-fill 
 ## Features
 
 - **Preset group management**: create/read/update/delete, enable/disable, and reorder skills in Settings → Plugins → Plugin Config
-- **One-click select**: the 「Preset」 selector next to the FULL ACCESS button in the composer toolbar — click to select, click again to deselect
+- **One-click select**: the 「Preset」 selector at the bottom-left of the composer — click to select, click again to deselect
 - **Auto-fill**: an empty input box gets the skill text filled in within ~500ms (e.g. `/grill-me /domain-modeling `)
 - **Smart guard**: nothing is filled when the input box already has content — existing content is never touched
 - **Global persistence**: the selection survives page refreshes, dsh restarts, and browser tabs

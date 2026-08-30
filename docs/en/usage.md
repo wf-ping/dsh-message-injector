@@ -9,7 +9,7 @@ Settings → Plugins → Plugin Config → find the dsh-skill-injector card:
 
 ## Select / deselect
 
-1. Back in a conversation, a **「Preset」** button appears next to the FULL ACCESS button in the composer toolbar
+1. Back in a conversation, a **「Preset」** button appears at the bottom-left of the composer
 2. Click it → choose a preset group (you may also select none)
 3. **Clicking the currently selected group again = deselect**, which stops auto-filling
 
