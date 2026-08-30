@@ -6,8 +6,9 @@ A dsh (DeepSeek Harness) plugin: preset common "message injection" content combi
 
 ## Features
 
-- **Preset group management**: create/read/update/delete, enable/disable, and reorder content in Settings → Plugins → Plugin Config
+- **Preset group management**: create/read/update/delete, enable/disable, reorder groups, and collapse groups in Settings → Plugins → Plugin Config — with the same official card look
 - **One-click select**: the 「Preset」 selector at the bottom-left of the composer — click to select, click again to deselect
+- **Settings shortcut**: a 「Settings」 item at the bottom of the selector menu opens the settings panel and expands this plugin's config card
 - **Auto-inject**: an empty input box gets the content injected within ~500ms (e.g. `/grill-me /domain-modeling ` or "Please answer in Chinese")
 - **Skill validation**: lines starting with `/` are treated as skill invocations — missing skills are warned in the config card and skipped when injecting
 - **Smart guard**: nothing is injected when the input box already has content — existing content is never touched

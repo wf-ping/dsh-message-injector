@@ -50,6 +50,11 @@ dsh-message-injector/
 ├── src/
 │   ├── index.ts            # 后端源码：Config schema + settings 接线 + validate
 │   ├── client.tsx          # 前端源码（JSX，构建为 lib/client.js）
+│   ├── components/
+│   │   └── ConfigCard.tsx  # 通用配置卡组件（官方壳复刻：折叠标题栏 + 表单体 + 放弃/保存脚注 + 展开信号）
+│   ├── utils/
+│   │   ├── scroll.ts       # 通用滚动工具（findScrollContainer / scrollElementIntoView / useReveal）
+│   │   └── css.ts          # CSS 注入工具（injectStyle，data-plugin-css 机制）
 │   └── ambient.d.ts        # 最小类型桩（react / primitives 由浏览器运行时提供）
 ├── scripts/build.mjs       # esbuild 构建（pnpm build）：后端 → lib/index.js，前端 → lib/client.js
 ├── lib/index.js            # 后端构建产物（已提交；改后端代码后需重新 pnpm build）

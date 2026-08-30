@@ -8,6 +8,8 @@
 declare module 'react' {
   export function useState<T>(initial: T | (() => T)): [T, (value: T | ((prev: T) => T)) => void]
   export function useEffect(effect: () => void | (() => void), deps?: readonly unknown[]): void
+  export function useRef<T>(initial: T): { current: T }
+  export function useRef<T>(initial: T | null): { current: T | null }
   export function useSyncExternalStore<Snap>(
     subscribe: (listener: () => void) => () => void,
     getSnapshot: () => Snap,
@@ -26,12 +28,17 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   /** 图标（按 名称+尺寸 命名） */
   export const IconSkillOutline16: any
   export const IconChevronDownOutline14: any
+  export const IconChevronUpOutline14: any
+  export const IconTrashOutline16: any
+  export const IconSettingsOutline16: any
 }
 
 declare namespace JSX {
   interface IntrinsicElements {
     div: Record<string, unknown> & { children?: unknown }
     span: Record<string, unknown> & { children?: unknown }
+    li: Record<string, unknown> & { children?: unknown }
+    p: Record<string, unknown> & { children?: unknown }
     button: Record<string, unknown> & { children?: unknown }
     input: Record<string, unknown> & { children?: unknown }
     textarea: Record<string, unknown> & { children?: unknown }

@@ -2,10 +2,14 @@
 
 ## Configure preset groups
 
-Settings → Plugins → Plugin Config → find the dsh-message-injector card:
+Settings → Plugins → Plugin Config → find the **「Message Injector」** card (collapsible — click the header bar to expand/collapse):
 
-1. Add a preset group, e.g. name `grill`, one content line per row: `/grill-me`, `/domain-modeling` (skill invocations carry a leading `/`), or plain text such as "Please answer in Chinese"
-2. Save (the group name must be unique and contain at least one content line; `/`-prefixed lines whose skill does not exist are marked with ⚠️ and skipped when injecting)
+1. Click **「+ Add preset group」**: the new group is inserted **at the first position** and auto-expanded (scrolled into view)
+2. Fill in the name (required, unique), description (optional), and content (one line per row: skill invocations carry a leading `/`, e.g. `/grill-me`; or plain text such as "Please answer in Chinese")
+3. Groups are collapsed by default (name only); click a group name to expand it for editing. The **enabled** toggle, move up/down, and delete live in the group header row and work while collapsed
+4. Click **Save** (name must be unique, at least one content line; `/`-prefixed lines whose skill does not exist are marked with ⚠️ and skipped when injecting) or **Discard**
+
+> Quick entry: the 「Preset」 menu at the bottom-left of the composer has a **「Settings」** item — one click opens the settings panel, switches to the Plugins section, and auto-expands the config card scrolled into view (if the auto-switch fails, switch manually and the card still expands by itself).
 
 ## Select / deselect
 
