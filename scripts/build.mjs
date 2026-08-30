@@ -43,7 +43,7 @@ const client = await build({
 
 const code = client.outputFiles[0].text
 const wrapped = `window.__ModuleLoader__.load({
-\tid: "dsh-skill-injector",
+\tid: "dsh-message-injector",
 \tfactory: (require) => {
 \t\tvar module = { exports: {} };
 \t\tvar exports = module.exports;

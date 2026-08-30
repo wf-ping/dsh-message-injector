@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目定位
 
-`dsh-skill-injector` 是 deepseek-harness（dsh）的一个插件：预设常用 skill 组合（如 `/grill-me` 等），用户无需每次对话前手动输入，由插件自动填充到对话框中。
+`dsh-message-injector` 是 deepseek-harness（dsh）的一个插件：预设常用"消息注入内容"组合（任意文本 / 技能调用），**每条消息自动注入**到输入框首行，一键启用、切换、停止。
 
 需求文档：`docs/zh/需求.md`，开发前先阅读。
 
 ## ⚠️ 高压线（绝对禁止，触犯即违规）
 
 1. **绝对禁止直接修改 dsh 的各项配置**：包括但不限于 `$DSH_HOME` 下的 profile/配置文件、dsh 自身 `node_modules`、dsh web 构建产物等一切 dsh 侧文件。
-2. 所有改动**只允许发生在本项目**（`dsh-skill-injector/`）代码内。
+2. 所有改动**只允许发生在本项目**（`dsh-message-injector/`）代码内。
 3. **测试插件可用性时，当且仅当使用官方的安装/卸载方式**，且**测试由用户亲自执行**：
    - 正式安装/卸载（官方命令）：`dsh plugin --profile <name> add|remove <package>`
    - 本仓库**不维护** `--patch` 本地开发加载配置，不使用该方式
@@ -20,9 +20,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 核心需求
 
-- **预设组**：多套常用的 skill 组合，可切换使用
-- **预设选择器**：放在对话框中 `FULL ACCESS` 切换按钮之后，UI 样式与之一致
+- **预设组**：多套常用的注入内容组合（任意文本 / 技能调用），可切换使用
+- **预设选择器**：放在输入框左下角（权限选择器旁），UI 样式与之一致
 - **管理入口**：在 dsh 的 设置 → 插件 → 插件配置 中完成预设组的增删改查、启用/禁用
+- **自动注入**：选中后每条消息自动把内容注入输入框首行（空输入框才注入，绝不触碰已有内容）
 - 点击选择器可看到已启用的预设组
 
 ## 插件开发框架（Cordis）
@@ -43,7 +44,7 @@ dsh 插件基于 Cordis 框架，官方教程：https://deepseek-harness.github.
 ## 目录结构
 
 ```
-dsh-skill-injector/
+dsh-message-injector/
 ├── package.json            # 插件身份证：dsh.bundle（激活）+ dsh.client（前端声明）+ exports["./client"]
 ├── src/
 │   ├── index.ts            # 后端源码：Config schema + settings 接线 + validate

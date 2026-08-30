@@ -7,7 +7,7 @@
 ## Directory layout
 
 ```
-dsh-skill-injector/
+dsh-message-injector/
 ├── package.json            # plugin identity: dsh.bundle (activation) + dsh.client (frontend) + exports["./client"]
 ├── src/
 │   ├── index.ts            # backend source: Config schema + settings wiring + validate
@@ -31,14 +31,14 @@ pnpm build            # build → lib/index.js + lib/client.js
 pnpm typecheck        # tsc --noEmit type check
 ```
 
-> This plugin is the **first third-party caller of the `setDraft` input-write channel** (no precedent in the dsh codebase). The channel is a public official API, but testing should focus on the fill behavior.
+> This plugin is the **first third-party caller of the `setDraft` input-write channel** (no precedent in the dsh codebase). The channel is a public official API, but testing should focus on the inject behavior.
 
 ## Key mechanisms (verified during development)
 
-- **UI injection**: `ctx.slots.inject('conversation.input.left', ...)` registers a list-slot component (the official seat after the FULL ACCESS button in the composer toolbar); the config card goes through `settings.plugin.item` (key = namespace `skill-injector`)
+- **UI injection**: `ctx.slots.inject('conversation.input.left', ...)` registers a list-slot component (the official seat at the bottom-left of the composer); the config card goes through `settings.plugin.item` (key = namespace `message-injector`)
 - **Input read/write**: official channel `input.setDraft(text)` (`conversation.input.for(actx)`; the composer is a React controlled component — never touch the DOM directly); emptiness is read via `input.state.getSnapshot()` (draft/phase)
 - **Config persistence**: backend `installSettingsSection` registers the namespace; frontend `ctx.settingsScope.bind({namespace})` reads/writes it (synced across tabs)
-- **Skill catalog**: `connection.api.skills.list({sessionId})` (requires a session; without one the check is unavailable → filling uses the configured skills as-is)
+- **Skill validation**: `connection.api.skills.list({sessionId})` validates `/`-prefixed skill-invocation lines (requires a session; without one the check is unavailable → those lines are injected as configured)
 
 ## Gotchas
 

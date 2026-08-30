@@ -1,15 +1,16 @@
-# dsh-skill-injector
+# dsh-message-injector
 
 > 中文：[README.md](README.md)
 
-A dsh (DeepSeek Harness) plugin: preset common skill combinations and auto-fill them into the first line of the input box. Enable, switch, and stop with one click — no more typing `/grill-me` before every conversation.
+A dsh (DeepSeek Harness) plugin: preset common "message injection" content combinations (arbitrary text / skill invocations) and **auto-inject them into every message** at the first line of the input box. Enable, switch, and stop with one click — no more typing the same instruction prefix or format requirement into every message.
 
 ## Features
 
-- **Preset group management**: create/read/update/delete, enable/disable, and reorder skills in Settings → Plugins → Plugin Config
+- **Preset group management**: create/read/update/delete, enable/disable, and reorder content in Settings → Plugins → Plugin Config
 - **One-click select**: the 「Preset」 selector at the bottom-left of the composer — click to select, click again to deselect
-- **Auto-fill**: an empty input box gets the skill text filled in within ~500ms (e.g. `/grill-me /domain-modeling `)
-- **Smart guard**: nothing is filled when the input box already has content — existing content is never touched
+- **Auto-inject**: an empty input box gets the content injected within ~500ms (e.g. `/grill-me /domain-modeling ` or "Please answer in Chinese")
+- **Skill validation**: lines starting with `/` are treated as skill invocations — missing skills are warned in the config card and skipped when injecting
+- **Smart guard**: nothing is injected when the input box already has content — existing content is never touched
 - **Global persistence**: the selection survives page refreshes, dsh restarts, and browser tabs
 
 ## Quick install
@@ -52,7 +53,7 @@ dsh plugin --profile web add github:user/repo        # pull the latest version
 ## Uninstall
 
 ```bash
-dsh plugin --profile web remove dsh-skill-injector    # uninstall
+dsh plugin --profile web remove dsh-message-injector    # uninstall
 # or from inside the repo: pnpm uninstall:plugin
 ```
 

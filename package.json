@@ -1,5 +1,5 @@
 {
-  "name": "dsh-skill-injector",
+  "name": "dsh-message-injector",
   "version": "0.1.0",
   "description": "dsh 插件：预设常用 skill 组合，自动填充到输入框首行",
   "type": "module",
@@ -28,7 +28,7 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit",
     "install:plugin": "dsh plugin --profile web add \"$PWD\"",
-    "uninstall:plugin": "dsh plugin --profile web remove dsh-skill-injector"
+    "uninstall:plugin": "dsh plugin --profile web remove dsh-message-injector"
   },
   "dependencies": {
     "@deepseek-ai/dsh-settings": "0.1.1-rc.2",

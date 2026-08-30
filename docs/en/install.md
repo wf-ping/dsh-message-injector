@@ -20,7 +20,7 @@ Or specify the path explicitly:
 
 ```bash
 dsh plugin --profile web add <repo-path>            # install
-dsh plugin --profile web remove dsh-skill-injector  # uninstall
+dsh plugin --profile web remove dsh-message-injector  # uninstall
 ```
 
 **Iterating after code changes** (the symlink points at the repo, so changes take effect immediately):
