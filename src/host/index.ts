@@ -11,18 +11,13 @@
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import { installSettingsSection, settingsNamespace } from '@deepseek-ai/dsh-settings'
+import type { PresetGroup, PresetConfig } from '../shared/types'
 
 /** 插件 settings 命名空间（后端注册、前端配置卡、选中状态共用） */
 export const NS = settingsNamespace('message-injector')
 
-/** 单个预设组 */
-export interface PresetGroup {
-  name: string
-  description: string
-  /** 注入内容列表：任意文本（技能名请带 /，如 /grill-me）；每条消息注入时按行空格连接 */
-  content: string[]
-  enabled: boolean
-}
+/** 领域类型（唯一来源 src/shared/types.ts；此处 re-export 保持对外接口不变） */
+export type { PresetGroup, PresetConfig }
 
 const presetGroupSchema = z.object({
   name: z.string().required(),
@@ -36,12 +31,6 @@ export const Config = z.object({
   /** 当前选中组名称；空字符串 = 未选中（F3） */
   selected: z.string().default(''),
 })
-
-/** 插件配置（与 Config schema 结构一致；手写类型以避免对 z.infer 的依赖） */
-export interface PresetConfig {
-  groups: PresetGroup[]
-  selected: string
-}
 
 export const name = 'dsh-message-injector'
 

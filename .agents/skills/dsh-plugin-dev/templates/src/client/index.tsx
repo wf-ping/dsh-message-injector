@@ -1,8 +1,17 @@
 /**
- * dsh 插件前端最小骨架（槽位组件 + settingsScope 读取）
+ * dsh 插件前端最小骨架（组合根：只做接线）
+ *
+ * 目录约定（与 dsh-message-injector 仓库一致）：
+ *  - types/     类型定义（ScopeLike/RootCtx 等防御式服务类型）
+ *  - api/       数据访问（如 api/skills.ts：connection.api.skills.list + 缓存）
+ *  - services/  业务服务（有生命周期/持续动作，如自动注入轮询——按需添加）
+ *  - logic/     纯业务逻辑（无副作用，如 logic/index.ts 的 formatCount）
+ *  - locales/   文案词典（zh/en）
+ *  - utils/     通用工具（scroll.ts / css.ts / signal.ts / settings.ts）
+ *  - components/ UI 组件（ConfigCard.tsx 官方配置卡壳）
  *
  * 完整功能参考：dsh-message-injector 仓库的 src/client/index.tsx——
- *  - 500ms 轮询注入、注入守卫、技能存在性校验、词典（zh/en）
+ *  - 500ms 轮询注入、注入守卫、技能存在性校验、设置直达（选择器菜单 → 设置面板）
  *
  * 数据读取两条路（开发前先按 SKILL.md 步骤 1 确认 harness 版本与基线支持面）：
  *  A. 基线就绪（harness 模块表含 @deepseek-ai/dsh-client-store）——官方家规：
@@ -12,44 +21,18 @@
  *     useSyncExternalStore，必须箭头函数包裹（坑 7：裸传方法丢 this，渲染崩溃）。
  */
 import { useSyncExternalStore } from 'react'
-
-// ─── 防御式服务类型（运行时按需取用，避免对内部包的强类型依赖）────────────
-interface ScopeLike<T> {
-  getSnapshot(): { status: string; value?: T }
-  subscribe(listener: () => void): () => void
-  set(field: string, value: unknown): Promise<void>
-}
-
-interface RootCtx {
-  effect(fn: () => void | (() => void), label?: string): void
-  slots: {
-    inject(key: string, cb: () => unknown): void
-    register(opts: Record<string, unknown>, comp: unknown): () => void
-  }
-  locale: { register(ns: string, dict: Record<string, Record<string, string>>): void }
-  sessions: {
-    list: { getSnapshot(): { current?: string } }
-    scope(id: string): { get(name: string): unknown } | undefined
-  }
-  settingsScope: { bind<T>(spec: { namespace: string }): ScopeLike<T> }
-  get(name: string): unknown
-}
+import type { RootCtx, ScopeLike } from './types'
+import { dict } from './locales'
+import { formatCount } from './logic'
+import { ConfigCard } from './components/ConfigCard'
 
 export const NS = 'hello'
 
 export const inject = ['slots', 'locale', 'sessions', 'settingsScope', 'connection'] as const
 
-// ─── 词典（zh/en）──────────────────────────────────────────────────────
-const dict: Record<string, Record<string, string>> = {
-  zh: { count: '计数', desc: '示例配置卡', save: '保存', discard: '放弃' },
-  en: { count: 'Count', desc: 'Example config card', save: 'Save', discard: 'Discard' },
-}
-
 // ─── 组件：设置 → 插件 → 插件配置 卡（settings.plugin.item 槽）──────────
 // 通用配置卡壳（官方样式 + 折叠标题栏 + 放弃/保存脚注）来自 components/ConfigCard.tsx；
 // 字段样式类（psi-field / psi-head / psi-label / psi-hint 等）随 ConfigCard 一并注入
-import { ConfigCard } from './components/ConfigCard'
-
 function HelloCard({ scope, t }: { scope: ScopeLike<{ count: number }>; t: (key: string) => string }) {
   // 坑 7：必须用箭头函数包一层，否则 useSyncExternalStore 调用时丢失 this
   const snap = useSyncExternalStore(
@@ -71,7 +54,7 @@ function HelloCard({ scope, t }: { scope: ScopeLike<{ count: number }>; t: (key:
         <div className="psi-head">
           <span className="psi-label">{t('count')}</span>
         </div>
-        <p className="psi-hint">{count}</p>
+        <p className="psi-hint">{formatCount(count)}</p>
       </div>
     </ConfigCard>
   )

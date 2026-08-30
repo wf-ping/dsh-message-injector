@@ -40,9 +40,11 @@ description: 指导从零开发一个 deepseek-harness (dsh) 插件：先确认�
 ### 4. 构建（esbuild 双产物）
 
 > 目录约定：`src/` 按官方 half 分法分 `src/host/`（后端）/ `src/client/`（前端）两个目录；
-> `src/client/components/` 放通用 UI 组件（模板自带官方配置卡 `ConfigCard.tsx`）、
-> `src/client/utils/` 放通用工具（模板自带 `scroll.ts` 滚动 / `css.ts` CSS 注入）。
-> 模板文件可直接 `cp` 复用（git 不追踪空目录，目录结构靠案例代码文件撑起来）。
+> `src/shared/` 放两端共用的领域类型（纯类型，无运行时）。`src/client/` 根目录只放入口
+> （组合根，只做接线），其余按职责归目录：
+> `types/`（契约类型）`api/`（数据访问）`services/`（业务服务）`logic/`（纯业务逻辑）
+> `locales/`（词典）`utils/`（通用工具）`components/`（UI 组件）。
+> 模板自带案例代码撑起目录结构（git 不追踪空目录），文件可直接 `cp` 复用。
 
 - `src/host/index.ts` → `lib/index.js`（后端 ESM，依赖保持外部解析）。
 - `src/client/index.tsx` → `lib/client.js`（前端，`window.__ModuleLoader__.load` 包装形态；react、primitives 等运行时依赖 external，由 shell 模块表提供）。**JSX 必须写在 `.tsx` 文件**（`.ts` 不解析 JSX）。
