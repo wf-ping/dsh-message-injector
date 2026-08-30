@@ -1,0 +1,43 @@
+{
+  "name": "dsh-hello-plugin",
+  "version": "0.1.0",
+  "description": "dsh 插件最小骨架（复制自 dsh-plugin-dev skill 的 templates，改包名即可用）",
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "slots",
+        "locale",
+        "sessions",
+        "settingsScope",
+        "connection"
+      ],
+      "platform": "web"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "install:plugin": "dsh plugin --profile web add \"$PWD\"",
+    "uninstall:plugin": "dsh plugin --profile web remove dsh-hello-plugin"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.1",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0"
+  },
+  "license": "MIT"
+}

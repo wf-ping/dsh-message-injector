@@ -1,0 +1,11 @@
+# 依赖与构建产物
+node_modules/
+dist/
+*.tsbuildinfo
+
+# 本地环境
+.DS_Store
+*.log
+
+# pnpm 本地内容存储（勿提交，坑 9 教训）
+.pnpm-store/
