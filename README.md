@@ -1,5 +1,7 @@
 # dsh-skill-injector
 
+> English: [README_EN.md](README_EN.md)
+
 dsh（DeepSeek Harness）插件：预设常用 skill 组合，选中后自动填充到输入框首行，一键启用、切换、停止——无需每次对话前手动输入 `/grill-me`。
 
 ## 功能
@@ -56,9 +58,8 @@ dsh plugin --profile web remove dsh-skill-injector    # 卸载
 
 ## 文档
 
-| | 安装 | 使用 | 架构 |
-|---|---|---|---|
-| 中文 | [安装](docs/zh/安装.md) | [使用说明](docs/zh/使用说明.md) | [架构](docs/zh/架构.md) |
-| English | [Install](docs/en/install.md) | [Usage](docs/en/usage.md) | [Architecture](docs/en/architecture.md) |
+- [安装](docs/zh/安装.md)
+- [使用说明](docs/zh/使用说明.md)
+- [架构](docs/zh/架构.md)
 
 > 开发者：需求文档见 `docs/zh/需求.md`，术语表见 `CONTEXT.md`。

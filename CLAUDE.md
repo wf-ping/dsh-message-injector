@@ -56,7 +56,8 @@ dsh-skill-injector/
 │   ├── zh/                             # 中文文档（安装.md / 使用说明.md / 架构.md / 需求.md）
 │   └── en/                             # 英文文档（install.md / usage.md / architecture.md）
 ├── CONTEXT.md              # 领域术语表
-└── README.md               # 精简门面页（中文，含文档链接）
+├── README.md               # 中文门面页（只链中文文档）
+└── README_EN.md            # 英文门面页（只链英文文档）
 ```
 
 > 术语约定：dsh 官方称 "host half / client half"（宿主半区/客户端半区），本项目文档统一用"**后端 / 前端**"表述（后端 = 服务端逻辑，前端 = 浏览器 UI）。
