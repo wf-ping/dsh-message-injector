@@ -35,16 +35,13 @@ The build artifacts in `lib/` are committed to the repo, so the **first install 
 ## Install from GitHub (for end users after open-sourcing)
 
 ```bash
-dsh plugin --profile web add github:user/repo
+dsh plugin --profile web add github:wf-ping/dsh-message-injector          # latest (tracks the main branch HEAD)
+dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.1.0    # pin a released version (recommended for stability)
 ```
 
-Pin a branch/tag:
+> Convention: no `#` = the default branch (main) latest; `#tag` = a pinned release (e.g. `#v0.1.0`). There is no `latest` tag — for git installs "latest" is naturally the main HEAD; tags exist only for pinning.
 
-```bash
-dsh plugin --profile web add github:user/repo#main
-```
-
-> How it works: `dsh plugin add` forwards its arguments to pnpm, which natively supports `github:user/repo` specs. The `lib/` build artifacts are committed, so the fetched package is ready to use — no build needed — and the `dsh.bundle` declaration makes it mount automatically as a profile layer.
+> How it works: `dsh plugin add` forwards its arguments to pnpm, which natively supports `github:wf-ping/dsh-message-injector` specs (with `#ref` for tags/branches/commits). The `lib/` build artifacts are committed, so the fetched package is ready to use — no build needed — and the `dsh.bundle` declaration makes it mount automatically as a profile layer.
 > Note: this installs a **clone** of the repo — changing and rebuilding your local code does **not** affect it; to update, re-run the `add` command above to pull the latest.
 
 > **Restart dsh web** after installing — the plugin layer is loaded at boot time.

@@ -21,8 +21,9 @@ dsh（DeepSeek Harness）插件：预设常用"消息注入内容"组合（任�
 ## 快速安装
 
 ```bash
-dsh plugin --profile web add github:用户名/仓库名    # 从 GitHub 安装
-dsh plugin --profile web add <本仓库路径>           # 本地/开发时安装
+dsh plugin --profile web add github:wf-ping/dsh-message-injector        # 从 GitHub 安装（默认 = 最新，跟随 main）
+dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.1.0  # 固定版本安装（可选）
+dsh plugin --profile web add <本仓库路径>                # 本地/开发时安装
 ```
 
 > 首次安装均无需构建（`lib/` 产物已提交）。详见[安装文档](docs/zh/安装.md)。
@@ -49,7 +50,7 @@ pnpm build        # 重新生成 lib/
 **GitHub 安装（克隆副本）** —— 已装副本与本地代码无关，更新需重新拉取：
 
 ```bash
-dsh plugin --profile web add github:用户名/仓库名    # 重新拉取最新版本
+dsh plugin --profile web add github:wf-ping/dsh-message-injector    # 重新拉取最新版本
 # 重启 dsh web 生效
 ```
 

@@ -21,7 +21,8 @@ Preset groups and the selection are stored in the dsh global config file: **`$DS
 ## Quick install
 
 ```bash
-dsh plugin --profile web add github:user/repo        # install from GitHub
+dsh plugin --profile web add github:wf-ping/dsh-message-injector        # install from GitHub (default = latest, tracks main)
+dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.1.0  # pin a specific version (optional)
 dsh plugin --profile web add <repo-path>             # local/development install
 ```
 
@@ -49,7 +50,7 @@ pnpm build        # regenerate lib/
 **GitHub install (clone)** — the installed copy is unrelated to your local code; update by re-pulling:
 
 ```bash
-dsh plugin --profile web add github:user/repo        # pull the latest version
+dsh plugin --profile web add github:wf-ping/dsh-message-injector        # pull the latest version
 # restart dsh web
 ```
 
