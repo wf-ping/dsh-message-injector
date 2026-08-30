@@ -1,7 +1,7 @@
 {
   "name": "dsh-message-injector",
   "version": "0.1.0",
-  "description": "dsh 插件：预设常用 skill 组合，自动填充到输入框首行",
+  "description": "dsh 插件：预设常用消息注入内容组合（任意文本/技能调用），每条消息自动注入到输入框首行",
   "type": "module",
   "main": "./lib/index.js",
   "exports": {
