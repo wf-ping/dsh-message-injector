@@ -14,6 +14,10 @@ A dsh (DeepSeek Harness) plugin: preset common "message injection" content combi
 - **Smart guard**: nothing is injected when the input box already has content — existing content is never touched
 - **Global persistence**: the selection survives page refreshes, dsh restarts, and browser tabs
 
+## Where the config lives
+
+Preset groups and the selection are stored in the dsh global config file: **`$DSH_HOME/settings.yaml`** (default `~/.dsh/settings.yaml`), under the `message-injector` namespace (`groups` + `selected`). Survives sessions, refreshes, and tabs; backup/migration = copy that file (or the `message-injector:` fragment). **Manage it through the plugin UI** — do not hand-edit the file (bypassing the UI may break format or validation).
+
 ## Quick install
 
 ```bash
