@@ -58,16 +58,14 @@ export function apply(ctx: RootCtx) {
     // F6-6 自动反选：当前选中组被删除/禁用 → 清空选中
     ctx.effect(() => keepSelectionValid(picked.form), 'message-injector: selection validity')
 
+    // 当前会话 id：由会话作用域槽位的 inject face 提供（dsh 0.2 的 sessions.list 快照无 current）
+    let sessionId: string | undefined
+    const currentSessionId = () => sessionId
+
     // 技能目录（有会话时；无会话返回 null = 不校验）
     const knownSkillNames = () => {
-      try {
-        const sessions = ctx.get('sessions') as RootCtx['sessions'] | undefined
-        const sessionId = sessions?.list.getSnapshot().current
-        if (!sessionId) return Promise.resolve(null)
-        return fetchKnownSkillNames(ctx, sessionId)
-      } catch {
-        return Promise.resolve(null)
-      }
+      if (!sessionId) return Promise.resolve(null)
+      return fetchKnownSkillNames(ctx, sessionId)
     }
 
     // F2 预设选择器：输入框左下角官方座位（conversation.input.left，additive list 槽）
@@ -115,7 +113,7 @@ export function apply(ctx: RootCtx) {
     }
 
     // F4/F5 自动注入轮询（500ms，用户拍板的实现方案）
-    ctx.effect(() => startAutoInject(ctx, scope), 'message-injector: auto-inject polling')
+    ctx.effect(() => startAutoInject(ctx, scope, currentSessionId), 'message-injector: auto-inject polling')
   } catch (e) {
     console.error('[dsh-message-injector] client apply FAILED:', e)
     throw e
