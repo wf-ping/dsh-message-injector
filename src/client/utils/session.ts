@@ -9,7 +9,9 @@ let current: string | undefined
 
 /** 记录当前会话 id */
 export function setCurrentSessionId(id: string | undefined): void {
-  if (typeof id === 'string' && id !== '') current = id
+  if (typeof id !== 'string' || id === '' || current === id) return
+  current = id
+  console.info('[dsh-message-injector] session id set:', id)
 }
 
 /** 读取当前会话 id */

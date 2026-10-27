@@ -36,7 +36,7 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSession
   try {
     const snap = scope.getSnapshot()
     // 状态变化才打印：看轮询眼里的 status / selected / 组数
-    const seen = `${snap.status}|${snap.value?.selected ?? '<none>'}|${snap.value?.groups.length ?? -1}`
+    const seen = `${snap.status}|${snap.value?.selected ?? '<none>'}|${snap.value?.groups.length ?? -1}|${currentSessionId() ?? 'no-session'}`
     if (seen !== lastSeen) {
       lastSeen = seen
       console.info('[dsh-message-injector] tick state:', seen)
