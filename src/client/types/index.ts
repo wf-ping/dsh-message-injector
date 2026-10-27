@@ -41,7 +41,10 @@ export interface ScopeLike<T> {
 /** 输入框官方写入通道（conversation.input.for(actx) 的防御式形状） */
 export interface InputLike {
   setDraft(text: string): void
-  state: { getSnapshot(): { draft: string; phase: string } }
+  state: {
+    getSnapshot(): { draft: string; phase: string }
+    subscribe?(listener: () => void): () => void
+  }
 }
 
 /** 客户端根上下文（apply 入参的防御式形状） */

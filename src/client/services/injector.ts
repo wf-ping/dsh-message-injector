@@ -12,14 +12,41 @@ import type { PresetConfig } from '../../shared/types'
 import { isSkillLine, normalizeContent, skillNameOf } from '../logic'
 import { fetchKnownSkillNames } from '../api/skills'
 
-/** 启动 500ms 自动注入轮询；返回停止函数 */
+/**
+ * 启动自动注入。
+ *
+ * 双通道：500ms 轮询兜底 + 输入状态订阅（草稿一变立刻判断，删空后立即反选，无 500ms 延迟）。
+ * @returns 停止函数（清定时器 + 退订）
+ */
 export function startAutoInject(
   ctx: RootCtx,
   scope: ScopeLike<PresetConfig>,
   currentSessionId: () => string | undefined,
 ): () => void {
   const timer = setInterval(() => { void tick(ctx, scope, currentSessionId) }, 500)
-  return () => clearInterval(timer)
+  return () => {
+    clearInterval(timer)
+    unsubscribe?.()
+    unsubscribe = undefined
+    subscribedInput = undefined
+  }
+}
+
+/** 当前已订阅的输入句柄与其退订函数（同一时间只订一个会话） */
+let subscribedInput: InputLike | undefined
+let unsubscribe: (() => void) | undefined
+
+/**
+ * 订阅输入状态：草稿一变立即跑一轮（删空反选要即时）。
+ * @param input 会话输入门面
+ */
+function ensureSubscribed(input: InputLike, rerun: () => void): void {
+  if (subscribedInput === input) return
+  unsubscribe?.()
+  subscribedInput = input
+  const state = input.state as unknown as { subscribe?: (listener: () => void) => () => void }
+  const off = state.subscribe?.(() => rerun())
+  unsubscribe = typeof off === 'function' ? off : undefined
 }
 
 // 每类原因只报一次，避免 500ms 刷屏
@@ -90,6 +117,7 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSession
       return
     }
 
+    ensureSubscribed(input, () => { void tick(ctx, scope, currentSessionId) })
     const s = input.state.getSnapshot()
 
     // 选中项或会话变了 → 重新允许填充
