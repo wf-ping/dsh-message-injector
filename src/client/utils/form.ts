@@ -1,8 +1,9 @@
 /**
  * 配置存储：浏览器 localStorage（模块级单例）
  *
- * 纯前端方案：不碰 dsh 的配置系统（0.2 起写入要过 volatile 字段 + 宿主校验，
- * 一次冲突就丢写入）。预设是纯界面偏好，存本地足够、即时生效、无需重启。
+ * 只承担两个角色（正式存储见 utils/store.ts 的宿主配置）：
+ *   1. 兜底——宿主没提供 configForms 时照旧可用；
+ *   2. 迁移源 + 镜像——把升级前的本地预设并进宿主，之后每次宿主值变化镜像一份。
  * 模块级单例保证插件热重载后仍是同一份数据。
  */
 import type { ConfigFormLike, ConfigSnapshot, ScopeLike } from '../types'
@@ -11,8 +12,8 @@ import type { PresetConfig } from '../../shared/types'
 const LOCAL_KEY = 'dsh-message-injector:config'
 
 /** 收敛任意输入为合法 PresetConfig */
-function normalize(value: unknown): PresetConfig {
-  const source = (value ?? {}) as { groups?: unknown; selected?: unknown }
+export function normalize(rawConfig: unknown): PresetConfig {
+  const source = (rawConfig ?? {}) as { groups?: unknown; selected?: unknown }
   const groups = Array.isArray(source.groups)
     ? source.groups.flatMap((item) => {
       const group = (item ?? {}) as { name?: unknown; description?: unknown; content?: unknown; enabled?: unknown }
@@ -29,7 +30,7 @@ function normalize(value: unknown): PresetConfig {
 }
 
 /** 读本地配置（损坏则给空配置） */
-function read(): PresetConfig {
+export function readLocalConfig(): PresetConfig {
   try {
     const raw = typeof localStorage === 'undefined' ? null : localStorage.getItem(LOCAL_KEY)
     return normalize(raw === null ? undefined : JSON.parse(raw))
@@ -38,8 +39,8 @@ function read(): PresetConfig {
   }
 }
 
-/** 写本地配置 */
-function write(config: PresetConfig): void {
+/** 写本地配置（镜像；存储不可用时静默失败） */
+export function writeLocalConfig(config: PresetConfig): void {
   try {
     if (typeof localStorage !== 'undefined') localStorage.setItem(LOCAL_KEY, JSON.stringify(config))
   } catch {
@@ -50,7 +51,7 @@ function write(config: PresetConfig): void {
 /** 内存 + localStorage 的配置表单（与 ConfigFormLike 同形） */
 function createLocalForm(): ConfigFormLike<PresetConfig> {
   const listeners = new Set<() => void>()
-  let cache = read()
+  let cache = readLocalConfig()
   let snapshot: ConfigSnapshot<PresetConfig> = { status: 'ready', value: cache, writable: true, revision: 0 }
   const emit = () => {
     snapshot = { status: 'ready', value: cache, writable: true, revision: (snapshot.revision ?? 0) + 1 }
@@ -61,7 +62,7 @@ function createLocalForm(): ConfigFormLike<PresetConfig> {
   if (typeof window !== 'undefined') {
     window.addEventListener('storage', (event) => {
       if (event.key !== null && event.key !== LOCAL_KEY) return
-      cache = read()
+      cache = readLocalConfig()
       emit()
     })
   }
@@ -81,7 +82,7 @@ function createLocalForm(): ConfigFormLike<PresetConfig> {
         else next = { ...next, [field]: op.value }
       }
       cache = normalize(next)
-      write(cache)
+      writeLocalConfig(cache)
       emit()
       return true
     },

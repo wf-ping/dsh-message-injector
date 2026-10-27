@@ -4,7 +4,14 @@
 
 ## [Unreleased]
 
-（暂无）
+### Fixed
+
+- **VS Code 面板与终端 `dsh web` 预设不共享**：配置改存 dsh 配置系统（settings 命名空间 = 条目 id `dsh-message-injector`，落盘当前 profile 的 `cordis.patch.yml`），两个入口读同一份。宿主端重新声明 `Config`（`groups` / `selected` 均为 `.volatile()`），前端用 `ctx.configForms.get()` 读写
+- **升级不丢数据**：首次接管宿主配置时把旧 localStorage 的预设并进宿主——同名组以宿主为准，旧数据独有的组补进去；成功后打一次标记，之后不再合并
+
+### Changed
+
+- localStorage 降级为**兜底 + 镜像**：宿主没提供 `configForms`（老版本 dsh / 未挂 settings）时照旧可用；迁移完成前不镜像，避免冲掉待迁移的旧数据
 
 ## [0.2.1] - 2026-10-28
 

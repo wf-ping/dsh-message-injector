@@ -16,7 +16,8 @@ const host = await build({
   format: 'esm',
   platform: 'node',
   target: 'node20',
-  external: [],
+  // schemastery 由 dsh 运行时提供（与 dsh 版本绑定），不内联
+  external: ['@deepseek-ai/schemastery'],
   write: false,
   logLevel: 'info',
 })

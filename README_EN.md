@@ -12,11 +12,13 @@ A dsh (DeepSeek Harness) plugin: preset common "message injection" content combi
 - **Auto-inject**: an empty input box gets the content injected within ~500ms (e.g. `/grill-me /domain-modeling ` or "Please answer in Chinese")
 - **Skill validation**: lines starting with `/` are treated as skill invocations — missing skills are warned in the config card and skipped when injecting
 - **Smart guard**: nothing is injected when the input box already has content — existing content is never touched
-- **Global persistence**: the selection survives page refreshes, dsh restarts, and browser tabs
+- **Global persistence**: the selection survives page refreshes, tabs, and restarts — shared between terminal `dsh web` and the VS Code panel
 
 ## Where the config lives
 
-Preset groups and the selection live in browser **localStorage** (key `dsh-message-injector:config`): client-side only, effective immediately, kept across refreshes and tabs. Clearing site data drops them; recreate via the dialog (or back up that key's JSON).
+Preset groups and the selection live in the **dsh config system** (settings namespace `dsh-message-injector`, persisted into the current profile's `cordis.patch.yml`). Because it lives on the Host, terminal `dsh web` and the VS Code panel read the same data, and switching browsers loses nothing.
+
+When the Host does not serve that namespace (older dsh / no settings mounted), the plugin falls back to browser localStorage (key `dsh-message-injector:config`). On the first load after upgrading, the old localStorage presets are merged into the Host: same-name groups follow the Host, groups only the old store had are added — no group is dropped.
 
 ## Quick install
 

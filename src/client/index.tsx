@@ -1,7 +1,8 @@
 /**
  * dsh-message-injector — 前端（dsh 官方称 Client half）入口（组合根）
  *
- * 纯前端插件：配置存 localStorage，注入走 input.setDraft，后端只保留加载入口。
+ * 配置存 dsh 配置系统（settings 命名空间 = 条目 id），跨入口共享；localStorage 只做兜底与首次迁移。
+ * 注入走 input.setDraft。
  * 业务实现按职责拆分：
  *  - components/PresetSelector.tsx     预设选择器（conversation.input.left，F2）+「配置」入口
  *  - components/PresetDialog.tsx       预设管理弹窗（原生 dialog，自包含 CRUD，F1）
@@ -19,17 +20,22 @@
 import type { RootCtx } from './types'
 import { dict } from './locales'
 import { createOneShotSignal } from './utils/signal'
-import { keepSelectionValid, localForm, scopeOf } from './utils/form'
+import { keepSelectionValid, scopeOf } from './utils/form'
+import { createPresetStore } from './utils/store'
 import { currentSessionId, setCurrentSessionId } from './utils/session'
 import { fetchKnownSkillNames } from './api/skills'
 import { armInjection, startAutoInject } from './services/injector'
 import { PresetSelector } from './components/PresetSelector'
+import type { PresetConfig } from '../shared/types'
 
 /** 词典命名空间（本插件自有） */
 export const NS = 'message-injector'
 
 /** 插件入口只需 slots + locale；sessions / connection 运行时按需取，缺了只降级 */
 export const inject = ['slots', 'locale'] as const
+
+/** settings 命名空间 = 本插件在 profile 里的条目 id（bundle.patch.yml 的 insert.id） */
+const ENTRY_ID = 'dsh-message-injector'
 
 // 插件页行配置卡（可选）展开信号
 const cardExpand = createOneShotSignal()
@@ -41,11 +47,24 @@ export function apply(ctx: RootCtx) {
   try {
     ctx.effect(() => ctx.locale.register(NS, dict), 'message-injector: dictionaries')
 
-    // 配置：浏览器本地（模块级单例，热重载不丢）
-    const scope = scopeOf(localForm)
+    // 配置：宿主配置（dsh settings，跨入口共享）；宿主缺失时退回 localStorage
+    const store = createPresetStore()
+    const scope = scopeOf(store)
+
+    // settings 服务就绪后接管宿主配置；没装 settings 的部署继续走本地
+    ctx.inject?.(['configForms'], (child) => {
+      const forms = child.configForms
+      if (forms === undefined || typeof forms.get !== 'function') return
+      try {
+        store.attach(forms.get<PresetConfig>(ENTRY_ID))
+        console.info('[dsh-message-injector] 配置已接宿主（settings 命名空间 ' + ENTRY_ID + '）')
+      } catch (e) {
+        console.warn('[dsh-message-injector] 接管宿主配置失败，退回 localStorage:', e)
+      }
+    })
 
     // F6-6 自动反选：当前选中组被删除/禁用 → 清空选中
-    ctx.effect(() => keepSelectionValid(localForm), 'message-injector: selection validity')
+    ctx.effect(() => keepSelectionValid(store), 'message-injector: selection validity')
 
     // 技能目录（有会话时；无会话返回 null = 不校验）
     const knownSkillNames = () => {

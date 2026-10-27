@@ -69,6 +69,13 @@ export interface RootCtx {
     }
   }
   get(name: string): unknown
+  /**
+   * cordis 依赖注入：服务就绪后回调（dsh 官方取 configForms 的方式）。
+   * 缺失时（老版本 cordis）整个插件降级为 localStorage。
+   */
+  inject?(deps: readonly string[], callback: (ctx: RootCtx) => void): unknown
+  /** 宿主配置表单服务（dsh-client-ui-settings 提供，命名空间 = profile 条目 id） */
+  configForms?: { get<T>(entryId: string): ConfigFormLike<T> }
 }
 
 /** 绑定后的配置作用域（供组件 props 引用，避免到处 import type） */
