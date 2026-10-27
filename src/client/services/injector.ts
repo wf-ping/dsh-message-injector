@@ -68,27 +68,55 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSession
 
     const s = input.state.getSnapshot()
     // 守卫 1：非 plain 相位（提交中/忙态）不注入
-    if (s.phase !== 'plain') return
+    if (s.phase !== 'plain') {
+      report('phase not plain', { phase: s.phase })
+      return
+    }
     // 守卫 2：输入框去掉空白后非空 → 不注入（保护已有内容）
-    if (typeof s.draft !== 'string' || s.draft.trim() !== '') return
+    if (typeof s.draft !== 'string') {
+      report('input state has no draft string', { keys: Object.keys(s) })
+      return
+    }
+    if (s.draft.trim() !== '') {
+      report('draft not empty', { draft: s.draft.slice(0, 40) })
+      return
+    }
     // 守卫 3：编辑器里已有未同步到 state 的文本 → 跳过
     if (typeof document !== 'undefined') {
       const editor = document.querySelector<HTMLElement>('[data-composer-card] [contenteditable="true"]')
       const text = editor?.textContent ?? ''
-      if (text.trim() !== '') return
+      if (text.trim() !== '') {
+        report('editor has unsynced text', { text: text.slice(0, 40), foundEditor: editor !== null })
+        return
+      }
     }
 
     let lines = normalizeContent(group.content)
-    if (lines.length === 0) return
+    if (lines.length === 0) {
+      report('group content empty', { group: group.name })
+      return
+    }
     // F6-1 运行期保守：技能调用行（/ 开头）校验存在性，缺失跳过；普通文本原样注入
     const known = await fetchKnownSkillNames(ctx, sessionId)
     if (known) {
+      const before = lines.length
       lines = lines.filter((line) => !isSkillLine(line) || known.has(skillNameOf(line)))
+      if (lines.length !== before) {
+        report('some skill lines filtered as missing', { before, after: lines.length, known: [...known].slice(0, 10) })
+      }
     }
-    if (lines.length === 0) return
+    if (lines.length === 0) {
+      report('no lines left after skill filtering', { content: group.content })
+      return
+    }
 
     // 官方写入通道：全量 setDraft（一次 draft-changed 事务，可撤销）；内容原样空格连接为一行
-    input.setDraft(lines.join(' ') + ' ')
+    const text = lines.join(' ') + ' '
+    input.setDraft(text)
+    if (!reported.has('done')) {
+      reported.add('done')
+      console.info('[dsh-message-injector] injected:', text.slice(0, 40))
+    }
   } catch (error) {
     report('tick failed', error)
   }
