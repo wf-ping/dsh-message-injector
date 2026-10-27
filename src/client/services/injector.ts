@@ -33,9 +33,15 @@ const report = (message: string, detail?: unknown) => {
 async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSessionId: () => string | undefined) {
   try {
     const snap = scope.getSnapshot()
-    if (snap.status !== 'ready' || !snap.value) return
+    if (snap.status !== 'ready' || !snap.value) {
+      report('config not ready', { status: snap.status, hasValue: snap.value !== undefined })
+      return
+    }
     const { groups, selected } = snap.value
-    if (selected === '') return
+    if (selected === '') {
+      report('nothing selected', { groups: groups.length })
+      return
+    }
     const group = groups.find((g) => g.name === selected)
     if (!group || !group.enabled) {
       report('selected group missing or disabled', { selected })

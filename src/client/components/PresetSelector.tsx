@@ -71,11 +71,17 @@ export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames, sessionId
       return
     }
     if (id === '__none__') return
+    const write = (value: string) => {
+      scope.set('selected', value).then(
+        () => console.info('[dsh-message-injector] selected =', value),
+        (error: unknown) => console.warn('[dsh-message-injector] select write failed:', error),
+      )
+    }
     if (id === selected) {
       // 反选：再次点击当前选中项 → 取消选择，确保不再注入
-      void scope.set('selected', '')
+      write('')
     } else {
-      void scope.set('selected', id)
+      write(id)
     }
   }
 
