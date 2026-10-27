@@ -45,5 +45,6 @@ declare namespace JSX {
     svg: Record<string, unknown> & { children?: unknown }
     path: Record<string, unknown> & { children?: unknown }
     circle: Record<string, unknown> & { children?: unknown }
+    dialog: Record<string, unknown> & { children?: unknown }
   }
 }

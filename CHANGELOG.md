@@ -20,6 +20,7 @@
 
 ### Added
 
+- **预设管理弹窗改用原生 `<dialog>` + `showModal()`**：居中、遮罩、层级由浏览器 top layer 负责，不再受宿主容器 overflow/transform/z-index 影响（此前自绘 overlay 会被带偏到画面左上角）
 - **预设管理弹窗**（`PresetDialog`）：选择器菜单底部「配置」直接弹出，增删改查/排序/启用禁用全在弹窗内；Esc、点遮罩、右上 × 关闭；`createPortal` 挂 body 避免被输入区裁切
 - 加载时打印 `[dsh-message-injector] client loaded`、槽位注册成功/5s 未出现提示，便于在浏览器 Console 定位
 
