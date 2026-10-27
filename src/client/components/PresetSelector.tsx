@@ -21,6 +21,8 @@ export interface SelectorProps {
   sessionId?: string
   /** 把会话 id 报给入口（自动注入轮询需要） */
   onSession?: (id: string) => void
+  /** 用户显式选了预设：重新允许自动填充 */
+  onSelect?: () => void
 }
 
 // ─── 样式（data-plugin-css 注入模式；全部使用 --dsw-alias-* 令牌 → 随主题共变，N1）───
@@ -36,7 +38,7 @@ const CSS = `
 
 injectStyle('@deepseek-ai/dsh-message-injector/PresetSelector.module.css', CSS)
 
-export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames, sessionId, onSession }: SelectorProps) {
+export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames, sessionId, onSession, onSelect }: SelectorProps) {
   const t = tRaw ?? ((k: string) => k)
   // 注意：必须用箭头函数包一层，否则 useSyncExternalStore 调用时丢失 this（SettingsScopeController 的方法依赖 this.store）
   const snap = useSyncExternalStore(
@@ -73,7 +75,11 @@ export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames, sessionId
     if (id === '__none__') return
     const write = (value: string) => {
       scope.set('selected', value).then(
-        () => console.info('[dsh-message-injector] selected =', value),
+        () => {
+          console.info('[dsh-message-injector] selected =', value)
+          // 显式选择 → 重新允许填充（即使值与之前相同）
+          if (value !== '') onSelect?.()
+        },
         (error: unknown) => console.warn('[dsh-message-injector] select write failed:', error),
       )
     }

@@ -30,17 +30,27 @@ const report = (message: string, detail?: unknown) => {
   console.warn('[dsh-message-injector] inject skipped:', message, detail ?? '')
 }
 
-let lastSeen = ''
+/**
+ * 注入节流状态：一次「选中 + 会话」只自动填一次。
+ *
+ * 规则（用户定的行为）：
+ *  - 选中预设 / 切换会话 / 消息发送完成 → 重新允许填充（armed = true）
+ *  - 自动填过一次 → armed = false
+ *  - 用户手动把输入框删空（draft 空且 armed=false）→ 不再填，直到上面的事件再次发生
+ */
+let armed = true
+let armedKey = ''
+let lastPhase = 'plain'
+const loggedKeys = new Set<string>()
+
+/** 显式重新武装（用户在菜单里选了一次预设，无论值是否变化） */
+export function armInjection(): void {
+  armed = true
+}
 
 async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSessionId: () => string | undefined) {
   try {
     const snap = scope.getSnapshot()
-    // 状态变化才打印：看轮询眼里的 status / selected / 组数
-    const seen = `${snap.status}|${snap.value?.selected ?? '<none>'}|${snap.value?.groups.length ?? -1}|${currentSessionId() ?? 'no-session'}`
-    if (seen !== lastSeen) {
-      lastSeen = seen
-      console.info('[dsh-message-injector] tick state:', seen)
-    }
     if (snap.status !== 'ready' || !snap.value) {
       report('config not ready', { status: snap.status, hasValue: snap.value !== undefined })
       return
@@ -81,6 +91,18 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSession
     }
 
     const s = input.state.getSnapshot()
+
+    // 选中项或会话变了 → 重新允许填充
+    const key = `${sessionId}|${selected}`
+    if (key !== armedKey) {
+      armedKey = key
+      armed = true
+      console.info('[dsh-message-injector] armed for', key)
+    }
+    // 提交结束（非 plain → plain）说明消息发出去了，下一条消息可以再填
+    if (lastPhase !== 'plain' && s.phase === 'plain') armed = true
+    lastPhase = s.phase
+
     // 守卫 1：非 plain 相位（提交中/忙态）不注入
     if (s.phase !== 'plain') {
       report('phase not plain', { phase: s.phase })
@@ -91,8 +113,13 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSession
       report('input state has no draft string', { keys: Object.keys(s) })
       return
     }
-    if (s.draft.trim() !== '') {
-      report('draft not empty', { draft: s.draft.slice(0, 40) })
+    if (s.draft.trim() !== '') return
+    // 用户手动删空（已填过一次）→ 不再无脑回填
+    if (!armed) {
+      if (!loggedKeys.has(key)) {
+        loggedKeys.add(key)
+        console.info('[dsh-message-injector] suppressed refill for', key)
+      }
       return
     }
     // 守卫 3：编辑器里已有未同步到 state 的文本 → 跳过
@@ -126,6 +153,7 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSession
 
     // 官方写入通道：全量 setDraft（一次 draft-changed 事务，可撤销）；内容原样空格连接为一行
     const text = lines.join(' ') + ' '
+    armed = false
     input.setDraft(text)
     if (!reported.has('done')) {
       reported.add('done')

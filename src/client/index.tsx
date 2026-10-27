@@ -22,7 +22,7 @@ import { createOneShotSignal } from './utils/signal'
 import { keepSelectionValid, localForm, scopeOf } from './utils/form'
 import { currentSessionId, setCurrentSessionId } from './utils/session'
 import { fetchKnownSkillNames } from './api/skills'
-import { startAutoInject } from './services/injector'
+import { armInjection, startAutoInject } from './services/injector'
 import { PresetSelector } from './components/PresetSelector'
 
 /** 词典命名空间（本插件自有） */
@@ -66,6 +66,7 @@ export function apply(ctx: RootCtx) {
           scope,
           fetchKnownSkillNames: knownSkillNames,
           onSession: (id: string) => setCurrentSessionId(id),
+          onSelect: () => armInjection(),
         }),
       }, PresetSelector)
     })
