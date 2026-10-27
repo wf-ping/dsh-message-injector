@@ -114,11 +114,16 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSession
       return
     }
     if (s.draft.trim() !== '') return
-    // 用户手动删空（已填过一次）→ 不再无脑回填
+    // 用户手动删空（已填过一次）→ 不再回填，并且直接取消选中
     if (!armed) {
       if (!loggedKeys.has(key)) {
         loggedKeys.add(key)
-        console.info('[dsh-message-injector] suppressed refill for', key)
+        console.info('[dsh-message-injector] manual clear detected, deselect preset:', key)
+      }
+      try {
+        await scope.set('selected', '')
+      } catch {
+        // 写失败也无妨：本轮的 armed=false 已经拦住回填
       }
       return
     }
