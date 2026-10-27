@@ -26,6 +26,7 @@ import { dict } from './locales'
 import { createOneShotSignal } from './utils/signal'
 import { openPluginPage } from './utils/settings'
 import { keepSelectionValid, pickForm, scopeOf } from './utils/form'
+import { currentSessionId, setCurrentSessionId } from './utils/session'
 import { fetchKnownSkillNames } from './api/skills'
 import { startAutoInject } from './services/injector'
 import { PresetSelector } from './components/PresetSelector'
@@ -58,15 +59,13 @@ export function apply(ctx: RootCtx) {
     // F6-6 自动反选：当前选中组被删除/禁用 → 清空选中
     ctx.effect(() => keepSelectionValid(picked.form), 'message-injector: selection validity')
 
-    // 当前会话 id：由会话作用域槽位提供（dsh 0.2 的 sessions.list 快照无 current）
-    let sessionId: string | undefined
+    // 当前会话 id：由会话作用域槽位提供（模块级共享，插件重载不丢）
     let injectLogged = false
-    const currentSessionId = () => sessionId
-
     // 技能目录（有会话时；无会话返回 null = 不校验）
     const knownSkillNames = () => {
-      if (!sessionId) return Promise.resolve(null)
-      return fetchKnownSkillNames(ctx, sessionId)
+      const id = currentSessionId()
+      if (!id) return Promise.resolve(null)
+      return fetchKnownSkillNames(ctx, id)
     }
 
     // F2 预设选择器：输入框左下角官方座位（conversation.input.left，additive list 槽）
