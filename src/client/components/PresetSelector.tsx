@@ -46,7 +46,10 @@ export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames, sessionId
   const [open, setOpen] = useState(false)
   // 会话 id 来自渲染器的标准 props（SessionStandardProps.sessionId）
   useEffect(() => {
-    if (sessionId) onSession?.(sessionId)
+    if (sessionId) {
+      console.info('[dsh-message-injector] selector got sessionId prop:', sessionId)
+      onSession?.(sessionId)
+    }
   }, [sessionId, onSession])
   // 配置弹窗（自包含：增删改查都在这里，不依赖 dsh 设置面板）
   const [configOpen, setConfigOpen] = useState(false)

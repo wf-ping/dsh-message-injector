@@ -58,8 +58,9 @@ export function apply(ctx: RootCtx) {
     // F6-6 自动反选：当前选中组被删除/禁用 → 清空选中
     ctx.effect(() => keepSelectionValid(picked.form), 'message-injector: selection validity')
 
-    // 当前会话 id：由会话作用域槽位的 inject face 提供（dsh 0.2 的 sessions.list 快照无 current）
+    // 当前会话 id：由会话作用域槽位提供（dsh 0.2 的 sessions.list 快照无 current）
     let sessionId: string | undefined
+    let injectLogged = false
     const currentSessionId = () => sessionId
 
     // 技能目录（有会话时；无会话返回 null = 不校验）
