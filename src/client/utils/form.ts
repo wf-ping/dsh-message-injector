@@ -135,10 +135,17 @@ export function pickForm(ctx: RootCtx): { form: ConfigFormLike<PresetConfig>; re
  * @returns 组件作用域
  */
 export function scopeOf<T>(form: ConfigFormLike<T>): ScopeLike<T> {
+  // useSyncExternalStore 要求 getSnapshot 返回稳定引用：底层快照不变就复用同一个包装对象
+  let lastRaw: ConfigSnapshot<T> | undefined
+  let lastWrapped: { status: string; value?: T } | undefined
   return {
     getSnapshot: () => {
       const snap = form.getSnapshot()
-      return { status: snap.status, value: snap.value }
+      if (snap !== lastRaw || lastWrapped === undefined) {
+        lastRaw = snap
+        lastWrapped = { status: snap.status, value: snap.value }
+      }
+      return lastWrapped
     },
     subscribe: (listener: () => void) => form.subscribe(listener),
     set: async (field: string, value: unknown) => {

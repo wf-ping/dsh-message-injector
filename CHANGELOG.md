@@ -12,6 +12,8 @@
 
 ### Fixed
 
+- **图标全部自带**：dsh 0.2 把 primitives 图标改名（`IconXxxOutline14/16` → `IconXxxOutlineRegular/Medium`），旧名取到 `undefined` 组件会让槽位渲染崩溃、入口整块消失；本插件改为内联 SVG，只保留 `Menu` 依赖
+- **快照引用稳定**：`getSnapshot` 每次新建对象会触发 React「getSnapshot should be cached」并打转，改为底层快照不变时复用同一包装对象
 - **加载健壮性**：cordis `inject` 收窄为 `slots` / `locale`；`configForms` / `sessions` / `connection` 改为运行时 `ctx.get` 按需取，服务缺失只降级不阻塞加载
 - **配置兜底**：宿主配置表单不可用时（服务缺失或版本差异）自动退回 `localStorage`，界面仍可增删改查
 - 去掉 `dsh.client.inject` 里的静态模块名（那不是包名，属于无效声明）
@@ -19,7 +21,7 @@
 ### Added
 
 - **预设管理弹窗**（`PresetDialog`）：选择器菜单底部「配置」直接弹出，增删改查/排序/启用禁用全在弹窗内；Esc、点遮罩、右上 × 关闭；`createPortal` 挂 body 避免被输入区裁切
-- 加载时打印 `[dsh-message-injector] client loaded`，便于在浏览器 Console 确认插件是否加载
+- 加载时打印 `[dsh-message-injector] client loaded`、槽位注册成功/5s 未出现提示，便于在浏览器 Console 定位
 
 ### Changed
 

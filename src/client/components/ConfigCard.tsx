@@ -12,7 +12,7 @@
  *   - 展开后可选择自动滚动露出（useReveal，默认开启；手动开合不滚动）。
  */
 import { useEffect, useState } from 'react'
-import { IconChevronDownOutline14 } from '@deepseek-ai/dsh-client-ui-primitives'
+import { ChevronDownIcon } from './icons'
 import { useReveal } from '../utils/scroll'
 import { injectStyle } from '../utils/css'
 
@@ -171,7 +171,7 @@ export function ConfigCard(props: ConfigCardProps) {
           <span className="psi-shellDesc">{description}</span>
         </span>
         {dirty && <span className="psi-shellPending">{t('unsaved')}</span>}
-        <IconChevronDownOutline14 className={'psi-shellChevron' + (open ? ' psi-shellChevronOpen' : '')} />
+        <ChevronDownIcon className={'psi-shellChevron' + (open ? ' psi-shellChevronOpen' : '')} />
       </button>
       {open && (
         <div className="psi-shellBody">

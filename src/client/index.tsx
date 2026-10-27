@@ -72,17 +72,30 @@ export function apply(ctx: RootCtx) {
 
     // F2 预设选择器：输入框左下角官方座位（conversation.input.left，additive list 槽）
     // 菜单底部「配置」打开自带的 PresetDialog（自包含增删改查）
-    ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
-      name: 'conversation.input.left',
-      id: 'message-injector-preset-selector',
-      order: 100,
-      locale: NS,
-      inject: () => ({
-        scope,
-        fetchKnownSkillNames: knownSkillNames,
-        onOpenSettings: () => openPluginPage(ctx, ENTRY_ID),
-      }),
-    }, PresetSelector))
+    let selectorRegistered = false
+    ctx.slots.inject('conversation.input.left', () => {
+      selectorRegistered = true
+      console.info('[dsh-message-injector] selector registered into conversation.input.left')
+      return ctx.slots.register({
+        name: 'conversation.input.left',
+        id: 'message-injector-preset-selector',
+        order: 100,
+        locale: NS,
+        inject: () => ({
+          scope,
+          fetchKnownSkillNames: knownSkillNames,
+          onOpenSettings: () => openPluginPage(ctx, ENTRY_ID),
+        }),
+      }, PresetSelector)
+    })
+    // 5 秒内槽位没出现 → 提示（输入框左下角没有入口时先看这条）
+    if (typeof setTimeout === 'function') {
+      setTimeout(() => {
+        if (!selectorRegistered) {
+          console.warn('[dsh-message-injector] conversation.input.left 槽位 5s 内未出现，选择器未注册')
+        }
+      }, 5000)
+    }
 
     // F1（可选）插件页行配置：宿主服务该命名空间且提供配置表单服务时才注册，
     // 未组合插件页 / 无表单服务时不产生任何残留 UI。

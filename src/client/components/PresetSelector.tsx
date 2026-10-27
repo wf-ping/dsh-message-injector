@@ -5,13 +5,9 @@
  * 菜单底部含「配置」快捷入口（onOpenSettings，由入口接线：打开插件页 + 展开配置卡）。
  */
 import { useState, useSyncExternalStore } from 'react'
-import {
-  Menu,
-  IconSkillOutline16,
-  IconChevronDownOutline14,
-  IconSettingsOutline16,
-} from '@deepseek-ai/dsh-client-ui-primitives'
+import { Menu } from '@deepseek-ai/dsh-client-ui-primitives'
 import { injectStyle } from '../utils/css'
+import { ChevronDownIcon, SettingsIcon, SkillIcon } from './icons'
 import { PresetDialog } from './PresetDialog'
 import type { ScopeLike } from '../types'
 import type { PresetConfig } from '../../shared/types'
@@ -81,7 +77,7 @@ export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames }: Selecto
       onSelect={choose}
       onClose={() => setOpen(false)}
       side="top"
-      footer={[{ id: '__settings__', label: t('openSettings'), icon: <IconSettingsOutline16 /> }]}
+      footer={[{ id: '__settings__', label: t('openSettings'), icon: <SettingsIcon /> }]}
       anchor={(
         <button
           type="button"
@@ -90,9 +86,9 @@ export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames }: Selecto
           title={current?.description || t('selectPreset')}
           onClick={() => setOpen(!open)}
         >
-          <IconSkillOutline16 />
+          <SkillIcon />
           <span>{current ? current.name : t('preset')}</span>
-          <IconChevronDownOutline14 className={'psi-chevron' + (open ? ' psi-chevron-open' : '')} />
+          <ChevronDownIcon className={'psi-chevron' + (open ? ' psi-chevron-open' : '')} />
         </button>
       )}
     />

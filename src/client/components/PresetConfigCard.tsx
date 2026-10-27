@@ -7,12 +7,8 @@
  * 全部走 --dsw-alias-* 令牌；禁止引用 dsh 内部 CSS 类名（构建哈希，升级即断，见坑 7）。
  */
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import {
-  IconChevronDownOutline14,
-  IconChevronUpOutline14,
-  IconTrashOutline16,
-} from '@deepseek-ai/dsh-client-ui-primitives'
 import { ConfigCard } from './ConfigCard'
+import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from './icons'
 import type { ExpandSignal } from './ConfigCard'
 import { scrollElementIntoView } from '../utils/scroll'
 import { injectStyle } from '../utils/css'
@@ -224,7 +220,7 @@ export function PresetConfigCard({ scope, fetchKnownSkillNames, t: tRaw, expandS
                 <span className={'psi-groupName' + (g.name.trim() === '' ? ' psi-groupNameEmpty' : '')}>
                   {g.name.trim() || t('groupName')}
                 </span>
-                <IconChevronDownOutline14 className={'psi-groupChevron' + (isOpen ? ' psi-groupChevronOpen' : '')} />
+                <ChevronDownIcon className={'psi-groupChevron' + (isOpen ? ' psi-groupChevronOpen' : '')} />
               </button>
               <label className="psi-checkLabel">
                 <input
@@ -236,13 +232,13 @@ export function PresetConfigCard({ scope, fetchKnownSkillNames, t: tRaw, expandS
                 {t('enabled')}
               </label>
               <button type="button" className="psi-iconBtn" title={t('moveUp')} disabled={i === 0} onClick={() => move(i, -1)}>
-                <IconChevronUpOutline14 />
+                <ChevronUpIcon />
               </button>
               <button type="button" className="psi-iconBtn" title={t('moveDown')} disabled={i === draft.length - 1} onClick={() => move(i, 1)}>
-                <IconChevronDownOutline14 />
+                <ChevronDownIcon />
               </button>
               <button type="button" className="psi-iconBtn" title={t('remove')} onClick={() => removeGroup(i)}>
-                <IconTrashOutline16 />
+                <TrashIcon />
               </button>
             </div>
             {isOpen && (

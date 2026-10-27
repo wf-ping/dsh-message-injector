@@ -28,14 +28,8 @@ declare module 'react/jsx-runtime' {
 }
 
 declare module '@deepseek-ai/dsh-client-ui-primitives' {
-  /** 通用下拉菜单（PermissionSelect 同款） */
+  /** 通用下拉菜单（PermissionSelect 同款）。0.2 起图标命名整体改版，本插件只用 Menu，图标自带 */
   export const Menu: any
-  /** 图标（按 名称+尺寸 命名） */
-  export const IconSkillOutline16: any
-  export const IconChevronDownOutline14: any
-  export const IconChevronUpOutline14: any
-  export const IconTrashOutline16: any
-  export const IconSettingsOutline16: any
 }
 
 declare namespace JSX {
@@ -48,5 +42,8 @@ declare namespace JSX {
     input: Record<string, unknown> & { children?: unknown }
     textarea: Record<string, unknown> & { children?: unknown }
     label: Record<string, unknown> & { children?: unknown }
+    svg: Record<string, unknown> & { children?: unknown }
+    path: Record<string, unknown> & { children?: unknown }
+    circle: Record<string, unknown> & { children?: unknown }
   }
 }
