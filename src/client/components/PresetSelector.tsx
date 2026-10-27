@@ -4,7 +4,7 @@
  * 样式与权限选择器同款并随主题共变（N1）：全部 --dsw-alias-* 令牌 + 官方 Menu 组件。
  * 菜单底部含「配置」快捷入口（onOpenSettings，由入口接线：打开插件页 + 展开配置卡）。
  */
-import { useState, useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { Menu } from '@deepseek-ai/dsh-client-ui-primitives'
 import { injectStyle } from '../utils/css'
 import { ChevronDownIcon, SettingsIcon, SkillIcon } from './icons'
@@ -17,6 +17,10 @@ export interface SelectorProps {
   t: (key: string) => string
   /** 技能目录（弹窗里做缺失技能警告） */
   fetchKnownSkillNames: () => Promise<Set<string> | null>
+  /** 当前会话 id（会话作用域槽位由渲染器作为标准 props 传入） */
+  sessionId?: string
+  /** 把会话 id 报给入口（自动注入轮询需要） */
+  onSession?: (id: string) => void
 }
 
 // ─── 样式（data-plugin-css 注入模式；全部使用 --dsw-alias-* 令牌 → 随主题共变，N1）───
@@ -32,7 +36,7 @@ const CSS = `
 
 injectStyle('@deepseek-ai/dsh-message-injector/PresetSelector.module.css', CSS)
 
-export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames }: SelectorProps) {
+export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames, sessionId, onSession }: SelectorProps) {
   const t = tRaw ?? ((k: string) => k)
   // 注意：必须用箭头函数包一层，否则 useSyncExternalStore 调用时丢失 this（SettingsScopeController 的方法依赖 this.store）
   const snap = useSyncExternalStore(
@@ -40,6 +44,10 @@ export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames }: Selecto
     () => scope.getSnapshot(),
   )
   const [open, setOpen] = useState(false)
+  // 会话 id 来自渲染器的标准 props（SessionStandardProps.sessionId）
+  useEffect(() => {
+    if (sessionId) onSession?.(sessionId)
+  }, [sessionId, onSession])
   // 配置弹窗（自包含：增删改查都在这里，不依赖 dsh 设置面板）
   const [configOpen, setConfigOpen] = useState(false)
   const config = snap.status === 'ready' ? snap.value : undefined

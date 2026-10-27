@@ -22,10 +22,11 @@ export function startAutoInject(
   return () => clearInterval(timer)
 }
 
-let reported = false
+// 每类原因只报一次，避免 500ms 刷屏
+const reported = new Set<string>()
 const report = (message: string, detail?: unknown) => {
-  if (reported) return
-  reported = true
+  if (reported.has(message)) return
+  reported.add(message)
   console.warn('[dsh-message-injector] inject skipped:', message, detail ?? '')
 }
 

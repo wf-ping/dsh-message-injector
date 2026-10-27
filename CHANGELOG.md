@@ -12,7 +12,7 @@
 
 ### Fixed
 
-- **自动注入失效**：dsh 0.2 的 `sessions.list` 快照已无 `current` 字段，取会话 id 恒为空 → 轮询每轮直接返回。改为从会话作用域槽位（`conversation.input.left`）的 inject face 记录 `sessionId`；并加一次性 `inject skipped: ...` 诊断日志
+- **自动注入失效**：dsh 0.2 的 `sessions.list` 快照已无 `current` 字段，取会话 id 恒为空 → 轮询每轮直接返回。改为从会话作用域槽位的**标准 props**（`SessionStandardProps.sessionId`，由渲染器传给槽位组件）记录 `sessionId`，inject face 的参数作为兜底；并加 `inject skipped: ...` 诊断日志（每类原因只报一次）
 - **图标全部自带**：dsh 0.2 把 primitives 图标改名（`IconXxxOutline14/16` → `IconXxxOutlineRegular/Medium`），旧名取到 `undefined` 组件会让槽位渲染崩溃、入口整块消失；本插件改为内联 SVG，只保留 `Menu` 依赖
 - **快照引用稳定**：`getSnapshot` 每次新建对象会触发 React「getSnapshot should be cached」并打转，改为底层快照不变时复用同一包装对象
 - **加载健壮性**：cordis `inject` 收窄为 `slots` / `locale`；`configForms` / `sessions` / `connection` 改为运行时 `ctx.get` 按需取，服务缺失只降级不阻塞加载
