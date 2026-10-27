@@ -30,9 +30,17 @@ const report = (message: string, detail?: unknown) => {
   console.warn('[dsh-message-injector] inject skipped:', message, detail ?? '')
 }
 
+let lastSeen = ''
+
 async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>, currentSessionId: () => string | undefined) {
   try {
     const snap = scope.getSnapshot()
+    // 状态变化才打印：看轮询眼里的 status / selected / 组数
+    const seen = `${snap.status}|${snap.value?.selected ?? '<none>'}|${snap.value?.groups.length ?? -1}`
+    if (seen !== lastSeen) {
+      lastSeen = seen
+      console.info('[dsh-message-injector] tick state:', seen)
+    }
     if (snap.status !== 'ready' || !snap.value) {
       report('config not ready', { status: snap.status, hasValue: snap.value !== undefined })
       return
