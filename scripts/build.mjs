@@ -27,6 +27,7 @@ console.log('built lib/index.js (' + host.outputFiles[0].text.length + ' bytes)'
 // ─── 2. 前端（client half）──────────────────────────────────────────
 const external = [
   'react',
+  'react-dom',
   'react/jsx-runtime',
   '@deepseek-ai/dsh-client-ui-primitives',
 ]

@@ -13,7 +13,10 @@ export async function fetchKnownSkillNames(ctx: RootCtx, sessionId: string): Pro
     return skillsCache.names
   }
   try {
-    const res = await ctx.connection.api.skills.list({ sessionId })
+    // connection 按需取（不写进 cordis inject）
+    const connection = ctx.get('connection') as RootCtx['connection'] | undefined
+    if (!connection) return null
+    const res = await connection.api.skills.list({ sessionId })
     const list = res?.value?.skills
     if (!Array.isArray(list)) return null
     const names = new Set<string>()

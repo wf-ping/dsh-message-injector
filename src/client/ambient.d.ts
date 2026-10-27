@@ -16,6 +16,11 @@ declare module 'react' {
   ): Snap
 }
 
+declare module 'react-dom' {
+  /** 把子树渲染到 document.body（弹窗用） */
+  export function createPortal(children: unknown, container: Element | DocumentFragment): unknown
+}
+
 declare module 'react/jsx-runtime' {
   export const jsx: unknown
   export const jsxs: unknown

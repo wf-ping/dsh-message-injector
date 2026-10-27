@@ -12,14 +12,15 @@ import {
   IconSettingsOutline16,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import { injectStyle } from '../utils/css'
+import { PresetDialog } from './PresetDialog'
 import type { ScopeLike } from '../types'
 import type { PresetConfig } from '../../shared/types'
 
 export interface SelectorProps {
   scope: ScopeLike<PresetConfig>
   t: (key: string) => string
-  /** 菜单底部「设置」入口回调（入口接线：打开设置面板 + 请求配置卡展开） */
-  onOpenSettings: () => void
+  /** 技能目录（弹窗里做缺失技能警告） */
+  fetchKnownSkillNames: () => Promise<Set<string> | null>
 }
 
 // ─── 样式（data-plugin-css 注入模式；全部使用 --dsw-alias-* 令牌 → 随主题共变，N1）───
@@ -35,7 +36,7 @@ const CSS = `
 
 injectStyle('@deepseek-ai/dsh-message-injector/PresetSelector.module.css', CSS)
 
-export function PresetSelector({ scope, t: tRaw, onOpenSettings }: SelectorProps) {
+export function PresetSelector({ scope, t: tRaw, fetchKnownSkillNames }: SelectorProps) {
   const t = tRaw ?? ((k: string) => k)
   // 注意：必须用箭头函数包一层，否则 useSyncExternalStore 调用时丢失 this（SettingsScopeController 的方法依赖 this.store）
   const snap = useSyncExternalStore(
@@ -43,6 +44,8 @@ export function PresetSelector({ scope, t: tRaw, onOpenSettings }: SelectorProps
     () => scope.getSnapshot(),
   )
   const [open, setOpen] = useState(false)
+  // 配置弹窗（自包含：增删改查都在这里，不依赖 dsh 设置面板）
+  const [configOpen, setConfigOpen] = useState(false)
   const config = snap.status === 'ready' ? snap.value : undefined
   const groups = (config?.groups ?? []).filter((g) => g.enabled)
   const selected = config?.selected ?? ''
@@ -56,8 +59,8 @@ export function PresetSelector({ scope, t: tRaw, onOpenSettings }: SelectorProps
   const choose = (id: string) => {
     setOpen(false)
     if (id === '__settings__') {
-      // 快捷入口：切到侧边栏「插件」页并打开本插件（再由行配置进入卡片）
-      onOpenSettings()
+      // 打开自带的配置弹窗
+      setConfigOpen(true)
       return
     }
     if (id === '__none__') return
@@ -70,6 +73,7 @@ export function PresetSelector({ scope, t: tRaw, onOpenSettings }: SelectorProps
   }
 
   return (
+    <>
     <Menu
       open={open}
       items={items}
@@ -92,5 +96,14 @@ export function PresetSelector({ scope, t: tRaw, onOpenSettings }: SelectorProps
         </button>
       )}
     />
+    {configOpen && (
+      <PresetDialog
+        scope={scope}
+        fetchKnownSkillNames={fetchKnownSkillNames}
+        t={t}
+        onClose={() => setConfigOpen(false)}
+      />
+    )}
+    </>
   )
 }

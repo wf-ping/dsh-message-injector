@@ -22,9 +22,12 @@ async function tick(ctx: RootCtx, scope: ScopeLike<PresetConfig>) {
   const group = groups.find((g) => g.name === selected)
   if (!group || !group.enabled) return
 
-  const sessionId = ctx.sessions.list.getSnapshot().current
+  // sessions 服务按需取（不写进 cordis inject，服务缺失时只是不注入）
+  const sessions = ctx.get('sessions') as RootCtx['sessions'] | undefined
+  if (!sessions) return
+  const sessionId = sessions.list.getSnapshot().current
   if (!sessionId) return
-  const actx = ctx.sessions.scope(sessionId)
+  const actx = sessions.scope(sessionId)
   if (!actx) return
   const conversation = actx.get('conversation') as { input?: { for(a: unknown): InputLike } } | undefined
   const input = conversation?.input?.for(actx)

@@ -28,6 +28,7 @@ export const dict: Record<string, Record<string, string>> = {
     discard: '放弃',
     expand: '展开',
     collapse: '收起',
+    close: '关闭',
   },
   en: {
     preset: 'Preset',
@@ -55,5 +56,6 @@ export const dict: Record<string, Record<string, string>> = {
     discard: 'Discard',
     expand: 'Expand',
     collapse: 'Collapse',
+    close: 'Close',
   },
 }

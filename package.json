@@ -1,6 +1,6 @@
 {
   "name": "dsh-message-injector",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "dsh 插件：预设常用消息注入内容组合（任意文本/技能调用），每条消息自动注入到输入框首行",
   "type": "module",
   "main": "./lib/index.js",
@@ -17,9 +17,6 @@
       "patch": "./bundle.patch.yml"
     },
     "client": {
-      "inject": [
-        "@deepseek-ai/dsh-client-ui-primitives"
-      ],
       "platform": "web"
     }
   },

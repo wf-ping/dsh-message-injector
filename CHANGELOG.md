@@ -6,6 +6,25 @@
 
 （暂无）
 
+## [0.2.1] - 2026-10-28
+
+修 0.2.0 装上后插件整个不加载的问题，并把配置入口做成自包含弹窗。
+
+### Fixed
+
+- **加载健壮性**：cordis `inject` 收窄为 `slots` / `locale`；`configForms` / `sessions` / `connection` 改为运行时 `ctx.get` 按需取，服务缺失只降级不阻塞加载
+- **配置兜底**：宿主配置表单不可用时（服务缺失或版本差异）自动退回 `localStorage`，界面仍可增删改查
+- 去掉 `dsh.client.inject` 里的静态模块名（那不是包名，属于无效声明）
+
+### Added
+
+- **预设管理弹窗**（`PresetDialog`）：选择器菜单底部「配置」直接弹出，增删改查/排序/启用禁用全在弹窗内；Esc、点遮罩、右上 × 关闭；`createPortal` 挂 body 避免被输入区裁切
+- 加载时打印 `[dsh-message-injector] client loaded`，便于在浏览器 Console 确认插件是否加载
+
+### Changed
+
+- 插件页 `plugins.row.config` 降级为可选入口（宿主支持才注册），不再是唯一配置入口
+
 ## [0.2.0] - 2026-10-28
 
 适配 dsh 0.2（0.2.1-rc.2）：配置系统重写，插件设置改挂到侧边栏「插件」页的行配置。
