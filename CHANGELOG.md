@@ -8,28 +8,29 @@
 
 ## [0.2.1] - 2026-10-28
 
-修 0.2.0 装上后插件整个不加载的问题，并把配置入口做成自包含弹窗。
+适配 dsh 0.2（0.2.1-rc.2）。配置系统与图标命名都在 0.2 变过，本版把插件重做成**纯前端**：
+配置存浏览器 localStorage，注入走 `input.setDraft`，宿主端只保留加载入口。
 
 ### Fixed
 
-- **自动注入失效**：dsh 0.2 的 `sessions.list` 快照已无 `current` 字段，取会话 id 恒为空 → 轮询每轮直接返回。改为从会话作用域槽位的**标准 props**（`SessionStandardProps.sessionId`，由渲染器传给槽位组件）记录 `sessionId`，inject face 的参数作为兜底；并加 `inject skipped: ...` 诊断日志（每类原因只报一次）
-- **图标全部自带**：dsh 0.2 把 primitives 图标改名（`IconXxxOutline14/16` → `IconXxxOutlineRegular/Medium`），旧名取到 `undefined` 组件会让槽位渲染崩溃、入口整块消失；本插件改为内联 SVG，只保留 `Menu` 依赖
-- **快照引用稳定**：`getSnapshot` 每次新建对象会触发 React「getSnapshot should be cached」并打转，改为底层快照不变时复用同一包装对象
-- **加载健壮性**：cordis `inject` 收窄为 `slots` / `locale`；`configForms` / `sessions` / `connection` 改为运行时 `ctx.get` 按需取，服务缺失只降级不阻塞加载
-- **配置兜底**：宿主配置表单不可用时（服务缺失或版本差异）自动退回 `localStorage`，界面仍可增删改查
-- 去掉 `dsh.client.inject` 里的静态模块名（那不是包名，属于无效声明）
+- **插件整体不加载**：cordis `inject` 收窄为 `slots` / `locale`，`sessions` / `connection` 改为运行时 `ctx.get` 按需取，服务缺失只降级不阻塞加载
+- **入口不显示**：0.2 把 primitives 图标改名（`IconXxxOutline14/16` → `OutlineRegular/Medium`），旧名是 `undefined` 组件会让槽位渲染崩溃；改为自带的 `components/icons.tsx` 内联 SVG，只保留 `Menu` 依赖
+- **虚拟列表打转**：`getSnapshot` 返回新对象会触发 React「getSnapshot should be cached」，改为底层快照不变时复用同一包装对象
+- **自动注入失效**：0.2 的 `sessions.list` 快照没有 `current` 字段。会话 id 改从会话作用域槽位的标准 props（`SessionStandardProps.sessionId`）取，并放到模块级单例（热重载不丢）
+- **写入被拒**：0.2 的配置写入要过 volatile 字段与宿主校验，会出现「宿主拒绝了这次写入」→ 见下方 Changed
 
 ### Added
 
-- **手动删空自动取消选中（即时）**：订阅输入状态，草稿一变化立刻判断，删空当刻就反选，不再等 500ms 轮询；一次「选中预设 + 会话」只自动填一次；用户手动把输入框删空时，插件直接清掉选中（选择器回到「预设」未选中态），自然也不会回填。重新武装的时机：在菜单里再选一次预设、切换会话、以及消息发送完成之后（下一条消息照常自动填）
-- **预设管理弹窗改用原生 `<dialog>` + `showModal()`**：居中、遮罩、层级由浏览器 top layer 负责，不再受宿主容器 overflow/transform/z-index 影响（此前自绘 overlay 会被带偏到画面左上角）
-- **预设管理弹窗**（`PresetDialog`）：选择器菜单底部「配置」直接弹出，增删改查/排序/启用禁用全在弹窗内；Esc、点遮罩、右上 × 关闭；`createPortal` 挂 body 避免被输入区裁切
-- 加载时打印 `[dsh-message-injector] client loaded`、槽位注册成功/5s 未出现提示，便于在浏览器 Console 定位
+- **预设管理弹窗**：选择器菜单底部「配置」直接弹出，增删改查/排序/启用禁用全在弹窗内。用原生 `<dialog>` + `showModal()`，定位/遮罩/层级交给浏览器 top layer（自绘 overlay 会被宿主布局带偏到左上角）；Esc、点遮罩、右上 × 关闭
+- **一次一填 + 删空反选**：一次「选中预设 + 会话」只自动填一次；手动把输入框删空时**立即**取消选中（订阅输入状态，不等 500ms 轮询）。重新允许填充：菜单里再选一次预设、切换会话、消息发送完成之后
+- 加载/槽位注册/跳过原因等 Console 诊断日志
 
 ### Changed
 
-- **配置改存 localStorage（纯前端）**：不再经过 dsh 配置系统（0.2 的写入要过 volatile 字段与宿主校验，一次 `宿主拒绝了这次写入` 就丢数据）。宿主端因此去掉 Config schema 与依赖 `schemastery`；配置即时生效、无需重启
-- 插件页 `plugins.row.config` 入口取消（配置统一走选择器菜单 →「配置」弹窗）
+- **配置改存 localStorage（纯前端）**：键 `dsh-message-injector:config`。不再经过 dsh 配置系统，即时生效、无需重启；宿主端去掉 `Config` schema 与 `ctx.settings.configure`，依赖里去掉 `@deepseek-ai/schemastery`
+- **配置入口**：`plugins.row.config`（插件页行配置）不再注册，统一走选择器菜单 →「配置」弹窗
+- `dsh.client.inject` 里的静态模块名去掉（那不是包名，属无效声明）
+- 新增 `engines.dsh`：`>=0.2.1-rc.2 <0.3.0-0`
 
 ## [0.2.0] - 2026-10-28
 

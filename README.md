@@ -6,7 +6,7 @@ dsh（DeepSeek Harness）插件：预设常用"消息注入内容"组合（任�
 
 ## 功能
 
-- **预设组管理**：输入框左下角「预设」→ 菜单底部「配置」→ 弹窗里增删改查、启用/禁用、组排序、组折叠（插件页行配置同源）
+- **预设组管理**：输入框左下角「预设」→ 菜单底部「配置」→ 弹窗里增删改查、启用/禁用、组排序、组折叠（配置存浏览器本地，即时生效）
 - **一键选择**：输入框左下角的「预设」选择器，点击选中，再点反选
 - **配置入口**：选择器菜单底部「配置」，直接弹出管理弹窗
 - **自动注入**：空输入框 ~500ms 自动注入内容（如 `/grill-me /domain-modeling ` 或 "请用中文回答"）
@@ -24,7 +24,7 @@ dsh（DeepSeek Harness）插件：预设常用"消息注入内容"组合（任�
 
 ```bash
 dsh plugin --profile web add github:wf-ping/dsh-message-injector        # 从 GitHub 安装（默认 = 最新，跟随 main）
-dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.2.0  # 固定版本安装（可选）
+dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.2.1  # 固定版本安装（可选）
 dsh plugin --profile web add <本仓库路径>                # 本地/开发时安装
 ```
 

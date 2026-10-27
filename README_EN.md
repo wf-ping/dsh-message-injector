@@ -22,7 +22,7 @@ Preset groups and the selection live in browser **localStorage** (key `dsh-messa
 
 ```bash
 dsh plugin --profile web add github:wf-ping/dsh-message-injector        # install from GitHub (default = latest, tracks main)
-dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.2.0  # pin a specific version (optional)
+dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.2.1  # pin a specific version (optional)
 dsh plugin --profile web add <repo-path>             # local/development install
 ```
 
