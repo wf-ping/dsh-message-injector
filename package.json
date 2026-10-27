@@ -26,9 +26,7 @@
     "install:plugin": "dsh plugin --profile web add \"$PWD\"",
     "uninstall:plugin": "dsh plugin --profile web remove dsh-message-injector"
   },
-  "dependencies": {
-    "@deepseek-ai/schemastery": "~3.18.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@deepseek-ai/cordis": "~4.0.5",
     "esbuild": "^0.24.0",

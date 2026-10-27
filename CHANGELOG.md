@@ -27,7 +27,8 @@
 
 ### Changed
 
-- 插件页 `plugins.row.config` 降级为可选入口（宿主支持才注册），不再是唯一配置入口
+- **配置改存 localStorage（纯前端）**：不再经过 dsh 配置系统（0.2 的写入要过 volatile 字段与宿主校验，一次 `宿主拒绝了这次写入` 就丢数据）。宿主端因此去掉 Config schema 与依赖 `schemastery`；配置即时生效、无需重启
+- 插件页 `plugins.row.config` 入口取消（配置统一走选择器菜单 →「配置」弹窗）
 
 ## [0.2.0] - 2026-10-28
 

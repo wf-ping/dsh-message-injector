@@ -16,7 +16,7 @@ A dsh (DeepSeek Harness) plugin: preset common "message injection" content combi
 
 ## Where the config lives
 
-Preset groups and the selection are persisted by the dsh settings system into the current profile's patch layer: **`$DSH_HOME/profiles/<profile>/cordis.patch.yml`** (default `~/.dsh/profiles/web/cordis.patch.yml`), under the `dsh-message-injector` entry's `config` (`groups` + `selected`). Survives sessions, refreshes, and tabs; backup/migration = copy that entry's fragment. **Manage it through the plugin UI** — do not hand-edit the file (bypassing the UI may break format or validation).
+Preset groups and the selection live in browser **localStorage** (key `dsh-message-injector:config`): client-side only, effective immediately, kept across refreshes and tabs. Clearing site data drops them; recreate via the dialog (or back up that key's JSON).
 
 ## Quick install
 

@@ -2,7 +2,7 @@
  * 预设选择器（conversation.input.left 槽，输入框左下角，F2）
  *
  * 样式与权限选择器同款并随主题共变（N1）：全部 --dsw-alias-* 令牌 + 官方 Menu 组件。
- * 菜单底部含「配置」快捷入口（onOpenSettings，由入口接线：打开插件页 + 展开配置卡）。
+ * 菜单底部含「配置」入口：打开自带的预设管理弹窗（增删改查都在弹窗里）。
  */
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { Menu } from '@deepseek-ai/dsh-client-ui-primitives'

@@ -16,9 +16,9 @@ dsh（DeepSeek Harness）插件：预设常用"消息注入内容"组合（任�
 
 ## 配置存储位置
 
-预设组与选中状态由 dsh 的配置系统持久化：写进当前 profile 的补丁层 **`$DSH_HOME/profiles/<profile>/cordis.patch.yml`**（默认 `~/.dsh/profiles/web/cordis.patch.yml`），落在条目 `dsh-message-injector` 的 `config` 下（`groups` + `selected`）。跨会话、跨刷新、跨标签页保持；备份/迁移 = 复制该条目片段。**请通过插件界面增删改**，不要手改文件（绕过界面可能破坏格式或校验）。
+预设组与选中状态存在浏览器 **localStorage**（键 `dsh-message-injector:config`），纯前端、即时生效，跨刷新/标签页保持；换浏览器或清缓存会丢，需要时用弹窗重建（也可自行备份这个键的 JSON）。
 
-> 从 0.1.x 升级：旧数据在 `$DSH_HOME/settings.yaml.imported` 的 `message-injector:` 段（dsh 0.2 已不再读取），升级后需在界面里重新录入一次。
+> 0.1.x 的旧数据在 `$DSH_HOME/settings.yaml.imported` 的 `message-injector:` 段，dsh 0.2 已不再读取；升级后需在弹窗里重新录入一次。
 
 ## 快速安装
 
