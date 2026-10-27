@@ -2,22 +2,36 @@
  * dsh-message-injector — 后端（dsh 官方称 Host half）
  *
  * 职责：
- *  - 声明插件配置 schema（预设组列表 + 当前选中组），经 settings 命名空间持久化（F3 全局持久化）
- *  - 保存时硬性校验（F6：组名唯一、非空组、内容行非空）
- *  - 当前选中组被删除/禁用时自动反选（F6-6）
+ *  - 声明插件 Config schema（预设组列表 + 当前选中组）；dsh 0.2 起配置表单由
+ *    schema 自动投影，命名空间 = loader 条目 id（本包 bundle.patch.yml 的
+ *    `dsh-message-injector`），字段必须 `.volatile()` 才允许用户在界面里改（F3）
+ *  - 关闭「自动生成配置页」（auto: false）：本插件自带配置卡，注册在插件页的
+ *    行配置槽（plugins.row.config，F1）
  *
  * 需求：docs/zh/需求.md（F1 / F3 / F6）
  */
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
-import { installSettingsSection, settingsNamespace } from '@deepseek-ai/dsh-settings'
-import type { PresetGroup, PresetConfig } from '../shared/types'
-
-/** 插件 settings 命名空间（后端注册、前端配置卡、选中状态共用） */
-export const NS = settingsNamespace('message-injector')
 
 /** 领域类型（唯一来源 src/shared/types.ts；此处 re-export 保持对外接口不变） */
-export type { PresetGroup, PresetConfig }
+export type { PresetGroup, PresetConfig } from '../shared/types'
+
+declare module '@deepseek-ai/cordis' {
+  interface Context {
+    /** dsh-settings 提供的配置表单服务（SettingsForms） */
+    settings: {
+      /**
+       * 登记本插件实例的配置页策略。
+       * @param presentation - `auto: false` 表示不生成自动配置页
+       * @param owner - 策略归属的插件实例（默认当前 fiber）
+       * @returns 注销函数
+       */
+      configure(presentation: { auto?: boolean }, owner?: unknown): () => void
+    }
+  }
+}
+
+export const name = 'dsh-message-injector'
 
 const presetGroupSchema = z.object({
   name: z.string().required(),
@@ -27,44 +41,14 @@ const presetGroupSchema = z.object({
 })
 
 export const Config = z.object({
-  groups: z.array(presetGroupSchema).default([]),
+  groups: z.array(presetGroupSchema).default([]).volatile(),
   /** 当前选中组名称；空字符串 = 未选中（F3） */
-  selected: z.string().default(''),
+  selected: z.string().default('').volatile(),
 })
 
-export const name = 'dsh-message-injector'
-
 export function apply(ctx: Context) {
-  // 配置源：settings 存在时取 live scope，否则回退组合 entry（installSettingsSection 规范接线）
-  let source: () => PresetConfig = () => ({ groups: [], selected: '' })
-
-  installSettingsSection(ctx, NS, Config, { groups: [], selected: '' }, {
-    setSource(current) {
-      source = current
-    },
-    onChange() {
-      // F6-6 自动反选：当前选中组被删除或禁用 → 清除选中，恢复未选中状态
-      const cfg = source()
-      const target = cfg.groups.find((g) => g.name === cfg.selected)
-      if (cfg.selected !== '' && (!target || !target.enabled)) {
-        void ctx.get('settings')?.update(NS, { selected: '' }).catch(() => {})
-      }
-    },
-    // F6 硬性校验（throw 即拒绝写入，wire 返回 settings-rejected）：
-    // 内容为任意文本，不做存在性校验（无法校验），仅拦结构性问题。
-    validate(value) {
-      const groups = value.groups ?? []
-      const seen = new Set<string>()
-      for (const group of groups) {
-        const n = group.name.trim()
-        if (n === '') throw new Error('预设组名称不能为空')
-        if (seen.has(n)) throw new Error(`预设组名称重复：${n}`)
-        seen.add(n)
-        if (group.content.length === 0) throw new Error(`预设组「${n}」的内容列表不能为空`)
-        for (const line of group.content) {
-          if (line.trim() === '') throw new Error(`预设组「${n}」包含空的内容行`)
-        }
-      }
-    },
+  // 配置界面由本插件自带的配置卡承担，声明后 dsh 不再生成自动配置页
+  ctx.inject(['settings'], (child) => {
+    child.effect(() => child.settings.configure({ auto: false }, ctx.fiber))
   })
 }

@@ -5,7 +5,7 @@ export const dict: Record<string, Record<string, string>> = {
   zh: {
     preset: '预设',
     selectPreset: '选择预设组',
-    openSettings: '设置',
+    openSettings: '配置',
     empty: '暂无已启用的预设组',
     groupName: '组名',
     description: '描述',
@@ -32,7 +32,7 @@ export const dict: Record<string, Record<string, string>> = {
   en: {
     preset: 'Preset',
     selectPreset: 'Select a preset group',
-    openSettings: 'Settings',
+    openSettings: 'Configure',
     empty: 'No enabled preset groups',
     groupName: 'Name',
     description: 'Description',

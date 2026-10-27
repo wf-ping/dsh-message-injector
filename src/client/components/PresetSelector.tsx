@@ -2,7 +2,7 @@
  * 预设选择器（conversation.input.left 槽，输入框左下角，F2）
  *
  * 样式与权限选择器同款并随主题共变（N1）：全部 --dsw-alias-* 令牌 + 官方 Menu 组件。
- * 菜单底部含「设置」快捷入口（onOpenSettings，由入口接线：打开设置 + 展开配置卡）。
+ * 菜单底部含「配置」快捷入口（onOpenSettings，由入口接线：打开插件页 + 展开配置卡）。
  */
 import { useState, useSyncExternalStore } from 'react'
 import {
@@ -56,7 +56,7 @@ export function PresetSelector({ scope, t: tRaw, onOpenSettings }: SelectorProps
   const choose = (id: string) => {
     setOpen(false)
     if (id === '__settings__') {
-      // 快捷入口：打开设置面板 → 自动切到「插件」分区 → 配置卡自动展开（定位失败时优雅降级）
+      // 快捷入口：切到侧边栏「插件」页并打开本插件（再由行配置进入卡片）
       onOpenSettings()
       return
     }

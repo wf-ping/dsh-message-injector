@@ -1,6 +1,6 @@
 {
   "name": "dsh-message-injector",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "dsh 插件：预设常用消息注入内容组合（任意文本/技能调用），每条消息自动注入到输入框首行",
   "type": "module",
   "main": "./lib/index.js",
@@ -9,17 +9,16 @@
     "./client": "./lib/client.js",
     "./package.json": "./package.json"
   },
+  "engines": {
+    "dsh": ">=0.2.1-rc.2 <0.3.0-0"
+  },
   "dsh": {
     "bundle": {
       "patch": "./bundle.patch.yml"
     },
     "client": {
       "inject": [
-        "slots",
-        "locale",
-        "sessions",
-        "settingsScope",
-        "connection"
+        "@deepseek-ai/dsh-client-ui-primitives"
       ],
       "platform": "web"
     }
@@ -31,11 +30,10 @@
     "uninstall:plugin": "dsh plugin --profile web remove dsh-message-injector"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-settings": "0.1.1-rc.2",
-    "@deepseek-ai/schemastery": "3.18.1"
+    "@deepseek-ai/schemastery": "~3.18.5"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "4.0.1",
+    "@deepseek-ai/cordis": "~4.0.5",
     "esbuild": "^0.24.0",
     "typescript": "^5.6.0"
   },

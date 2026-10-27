@@ -2,7 +2,7 @@
 
 ## Configure preset groups
 
-Settings → Plugins → Plugin Config → find the **「Message Injector」** card (collapsible — click the header bar to expand/collapse):
+Sidebar **Plugins** page → this plugin → the row's **Configure** → the **「Message Injector」** card (collapsible — click the header bar to expand/collapse):
 
 1. Click **「+ Add preset group」**: the new group is inserted **at the first position** and auto-expanded (scrolled into view)
 2. Fill in the name (required, unique), description (optional), and content (one line per row: skill invocations carry a leading `/`, e.g. `/grill-me`; or plain text such as "Please answer in Chinese")
@@ -34,7 +34,7 @@ Settings → Plugins → Plugin Config → find the **「Message Injector」** c
 
 ## Typical workflow
 
-1. **Configure**: Settings → Plugins → Plugin Config → **「+ Add preset group」** (the new group is inserted **at the first position** and auto-expanded) → fill in name/description/content (one per line) → **Save** (or Discard)
+1. **Configure**: sidebar **Plugins** → this plugin → **Configure** → **「+ Add preset group」** (the new group is inserted **at the first position** and auto-expanded) → fill in name/description/content (one per line) → **Save** (or Discard)
 2. **Select**: click the **「Preset」** button at the bottom-left of the composer → pick a group (**clicking the current group again = deselect**, stopping injection)
 3. **In effect**: an empty input box gets the content injected within ~500ms; edit freely before sending; after sending the box clears and **every message repeats automatically**
 4. **Maintain**: groups are collapsed by default (name only) — click to expand for editing; enable/disable, move up/down, and delete live in the group header row; the **「Settings」** item at the bottom of the selector menu jumps straight to the config

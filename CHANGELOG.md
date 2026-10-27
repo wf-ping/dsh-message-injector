@@ -6,6 +6,27 @@
 
 （暂无）
 
+## [0.2.0] - 2026-10-28
+
+适配 dsh 0.2（0.2.1-rc.2）：配置系统重写，插件设置改挂到侧边栏「插件」页的行配置。
+
+### Added
+
+- `engines.dsh` 声明（`>=0.2.1-rc.2 <0.3.0-0`），不兼容版本在安装/管理界面直接报出来
+
+### Changed
+
+- **配置持久化**：弃用 `installSettingsSection` / `settingsNamespace` / `ctx.settingsScope`（dsh 0.2 已移除）；改为导出 `Config` schema（`groups` / `selected` 标 `.volatile()`），命名空间 = loader 条目 id `dsh-message-injector`，前端用 `ctx.configForms.get(entryId)` 读写
+- **配置入口**：`settings.plugin.item` 槽已不存在；配置卡改注册到 `plugins.row.config`（keyed，key = `dsh-message-injector#dsh-message-injector`），渲染在侧边栏「插件」→ 本插件 → 行「配置」
+- **配置直达**：DOM aria/文案定位改为反射服务 `pluginNavigation.openBundle(包名)`；菜单项文案「设置」→「配置」
+- **自动反选**（F6-6）移到前端：订阅配置表单快照，选中组被删除/禁用即写回空 `selected`
+- `dsh.client.inject` 由服务名改为官方包名（`@deepseek-ai/dsh-client-ui-primitives`），与 0.2 清单语义一致
+
+### Removed
+
+- 依赖 `@deepseek-ai/dsh-settings`（0.2 不再导出旧辅助函数）
+- 旧 DOM 定位工具（`utils/settings.ts` 原实现）
+
 ## [0.1.0] - 2026-08-30
 
 首个开源版本。

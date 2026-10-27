@@ -6,9 +6,9 @@ A dsh (DeepSeek Harness) plugin: preset common "message injection" content combi
 
 ## Features
 
-- **Preset group management**: create/read/update/delete, enable/disable, reorder groups, and collapse groups in Settings → Plugins → Plugin Config — with the same official card look
+- **Preset group management**: create/read/update/delete, enable/disable, reorder groups, and collapse groups in the sidebar Plugins page → this plugin → row config — with the same official card look
 - **One-click select**: the 「Preset」 selector at the bottom-left of the composer — click to select, click again to deselect
-- **Settings shortcut**: a 「Settings」 item at the bottom of the selector menu opens the settings panel and expands this plugin's config card
+- **Config shortcut**: a 「Configure」 item at the bottom of the selector menu opens this plugin's page
 - **Auto-inject**: an empty input box gets the content injected within ~500ms (e.g. `/grill-me /domain-modeling ` or "Please answer in Chinese")
 - **Skill validation**: lines starting with `/` are treated as skill invocations — missing skills are warned in the config card and skipped when injecting
 - **Smart guard**: nothing is injected when the input box already has content — existing content is never touched
@@ -16,13 +16,13 @@ A dsh (DeepSeek Harness) plugin: preset common "message injection" content combi
 
 ## Where the config lives
 
-Preset groups and the selection are stored in the dsh global config file: **`$DSH_HOME/settings.yaml`** (default `~/.dsh/settings.yaml`), under the `message-injector` namespace (`groups` + `selected`). Survives sessions, refreshes, and tabs; backup/migration = copy that file (or the `message-injector:` fragment). **Manage it through the plugin UI** — do not hand-edit the file (bypassing the UI may break format or validation).
+Preset groups and the selection are persisted by the dsh settings system into the current profile's patch layer: **`$DSH_HOME/profiles/<profile>/cordis.patch.yml`** (default `~/.dsh/profiles/web/cordis.patch.yml`), under the `dsh-message-injector` entry's `config` (`groups` + `selected`). Survives sessions, refreshes, and tabs; backup/migration = copy that entry's fragment. **Manage it through the plugin UI** — do not hand-edit the file (bypassing the UI may break format or validation).
 
 ## Quick install
 
 ```bash
 dsh plugin --profile web add github:wf-ping/dsh-message-injector        # install from GitHub (default = latest, tracks main)
-dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.1.0  # pin a specific version (optional)
+dsh plugin --profile web add github:wf-ping/dsh-message-injector#v0.2.0  # pin a specific version (optional)
 dsh plugin --profile web add <repo-path>             # local/development install
 ```
 

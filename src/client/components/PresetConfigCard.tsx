@@ -1,5 +1,5 @@
 /**
- * 预设组配置卡（settings.plugin.item，设置 → 插件 → 插件配置，F1）
+ * 预设组配置卡（plugins.row.config，侧边栏「插件」→ 本插件 → 行配置，F1）
  *
  * 形态与 dsh 官方配置卡（WebSearch/Bash/AgentLoop）同构：可折叠标题栏 + 表单体
  * + 放弃/保存脚注——复用通用组件 ConfigCard（见 components/ConfigCard.tsx）。

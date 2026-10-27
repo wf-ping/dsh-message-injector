@@ -16,7 +16,7 @@ const host = await build({
   format: 'esm',
   platform: 'node',
   target: 'node20',
-  external: ['@deepseek-ai/schemastery', '@deepseek-ai/dsh-settings'],
+  external: ['@deepseek-ai/schemastery'],
   write: false,
   logLevel: 'info',
 })
